@@ -4,7 +4,7 @@
   "description": "\"This is server for HirePrep software\"",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && node index.js",
+    "start": "tsc && node ./src/docs/swagger.js && node index.js",
     "dev": "nodemon index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "swagger": "node ./src/docs/swagger.js"

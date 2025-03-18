@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRoutes = void 0;
+const express_1 = require("express");
+const utils_1 = require("../../lib/utils");
+const user_controller_1 = require("../../controllers/user/user.controller");
+const twitter_controller_1 = require("../../controllers/twitter/twitter.controller");
+exports.authRoutes = (0, express_1.Router)();
+exports.authRoutes.post("/login", (0, utils_1.asyncHandler)(user_controller_1.user.login));
+exports.authRoutes.post("/signup", (0, utils_1.asyncHandler)(user_controller_1.user.signup));
+exports.authRoutes.post("/logout", (0, utils_1.asyncHandler)(user_controller_1.user.logout));
+exports.authRoutes.get("/who-am-i", (0, utils_1.asyncHandler)(user_controller_1.user.whoAmI));
+exports.authRoutes.post("/twitter", (0, utils_1.asyncHandler)(twitter_controller_1.twitter.authorize));
