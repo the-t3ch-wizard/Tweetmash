@@ -11,7 +11,7 @@ const authorize = async (req: Req, res: Res) => {
   let data = qs.stringify({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: env.FRONTEND_URL ,
+    redirect_uri: env.FRONTEND_URL + "/auth/twitter/callback" ,
     code_verifier: "challenge",
   });
   
