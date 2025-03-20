@@ -11,7 +11,7 @@ import {
   SidebarMenuSub,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ChevronRight, Home, Info, LogOut, MessageSquareText, MessageSquareWarning, MessagesSquare } from "lucide-react"
+import { ChevronRight, Fingerprint, Home, Info, LogOut, MessageSquareText, MessageSquareWarning, MessagesSquare, Twitter } from "lucide-react"
 import { ModeToggle } from "./mode-toggle"
 import { Link } from "react-router-dom"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@radix-ui/react-collapsible"
@@ -70,6 +70,16 @@ export function AppSidebar() {
         title: "Home",
         url: "/",
         icon: Home,
+      },
+      {
+        title: "Authorize Twitter",
+        url: "/auth/twitter",
+        icon: Fingerprint,
+      },
+      {
+        title: "Twitter Base",
+        url: "/twitter-base",
+        icon: Twitter,
       },
     ])
 

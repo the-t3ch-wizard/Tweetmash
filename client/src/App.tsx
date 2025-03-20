@@ -7,6 +7,7 @@ import { useAppSelector } from './lib/store/hooks/hooks'
 import { NotFound } from './app/404-not-found/NotFound'
 import { AuthTwitter } from './app/auth/twitter/AuthTwitter'
 import { AuthTwitterCallback } from './app/auth/twitter/callback/AuthTwitterCallback'
+import { TwitterBase } from './app/twitter-base/TwitterBase'
 
 function App() {
 
@@ -25,6 +26,8 @@ function App() {
               <Route path="twitter" element={<AuthTwitter />} />
               <Route path="twitter/callback" element={<AuthTwitterCallback />} />
             </Route>
+            
+            <Route path="twitter-base" element={<TwitterBase />} />
           </> :
           null
         }

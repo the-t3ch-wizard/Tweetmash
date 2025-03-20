@@ -4,6 +4,7 @@ import { user } from "../controllers/user/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { userRoutes } from "./user/user.routes";
 import { authRoutes } from "./auth/auth.routes";
+import { twitterRoutes } from "./twitter/twitter.routes";
 
 const router = Router();
 
@@ -12,6 +13,8 @@ router.get("/health-check", asyncHandler((req: any, res: any) => {
 }))
 
 router.use("/auth", authRoutes)
+
+router.use("/twitter", twitterRoutes)
 
 router.use(asyncHandler(authMiddleware));
 

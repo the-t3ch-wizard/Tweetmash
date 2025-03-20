@@ -38,6 +38,46 @@ const authorize = async (req: Req, res: Res) => {
   return res.status(200).json(successResponse(200, "Twitter authorized successfully", null));
 };
 
+const getBasicDetails = async (req: Req, res: Res) => {
+
+  const { twitterToken } = req.cookies;
+
+  const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
+
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'https://api.twitter.com/2/users/me',
+    headers: { 
+      'Authorization': authorization_code,
+      'Cookie': '__cf_bm=Q5zSfZ81E8xWwLTp6R5CXHA5k4GJ_aItDXUjlqvNQwM-1742466085-1.0.1.1-1byP1Zo7YVZbvlQDwxAgTGJ81XJZy6IXwzO6Pn47nGqNaYP1pcg9v8kGRESNZ7o1Y3lbRixC48hReAai093QnGvUSgKg2NZss.LDDKLH3_c; guest_id=v1%3A174232347687444935; guest_id_ads=v1%3A174232347687444935; guest_id_marketing=v1%3A174232347687444935; personalization_id="v1_xVlIIR0LVcg95qkbM9gadA=="'
+    }
+  };
+
+  const {data: response} = await axios.request(config);
+
+  // try {
+  //   const {data: response} = await axios.request(config);
+  // } catch (error: any) {
+    /*
+    FIX
+    if the access token is expired then generate new token using refresh token
+
+    this is error?.response?.data for providing wrong access token
+    {
+      title: 'Unsupported Authentication',
+      detail: 'Authenticating with OAuth 2.0 Application-Only is forbidden for this endpoint.  Supported authentication types are [OAuth 1.0a User Context, OAuth 2.0 User Context].',
+      type: 'https://api.twitter.com/2/problems/unsupported-authentication',
+      status: 403
+    }
+    // if (Number(error?.status) === 403 || Number(error?.response?.data?.status) === 403)
+    */
+  // }
+
+  return res.status(200).json(successResponse(200, "Twitter authorized successfully", response.data));
+}
+
 export const twitter = {
   authorize,
+  getBasicDetails,
 };
