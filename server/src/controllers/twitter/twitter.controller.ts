@@ -41,7 +41,7 @@ const authorize = async (req: Req, res: Res) => {
 
   console.log("11 TEST", twitterToken)
 
-  const authorization_code = twitterToken.access_token;
+  const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
 
   console.log("22 TEST", authorization_code);
 
@@ -49,12 +49,14 @@ const authorize = async (req: Req, res: Res) => {
 
   const userId = req.user?.userId;
 
-  // const updatedUserData = await User.findByIdAndUpdate(userId, {
-  //   twitterData: {
-  //     name: userTwitterData?.data?.name,
-  //     username: userTwitterData?.data?.username,
-  //   }
-  // })
+  const updatedUserData = await User.findByIdAndUpdate(userId, {
+    twitterData: {
+      name: userTwitterData?.data?.name,
+      username: userTwitterData?.data?.username,
+    }
+  })
+
+  console.log("update", updatedUserData);
 
   return res.status(200).json(successResponse(200, "Twitter authorized successfully", null));
 };
