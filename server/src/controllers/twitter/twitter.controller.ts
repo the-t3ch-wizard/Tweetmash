@@ -4,6 +4,7 @@ import { Req, Res } from "../../types/types";
 import qs from "qs";
 import axios from "axios";
 import { authenticatedUserLookup } from "../../lib/api/twitter/twitter";
+import { User } from "../../models/user.model";
 
 const authorize = async (req: Req, res: Res) => {
 
@@ -40,11 +41,20 @@ const authorize = async (req: Req, res: Res) => {
 
   console.log("11 TEST", twitterToken)
 
-  const authorization_code = getTwitterAuthorizationCodeFromCookie(req);
+  const authorization_code = twitterToken.access_token;
 
   console.log("22 TEST", authorization_code);
 
-  const temp = await authenticatedUserLookup(authorization_code);
+  const userTwitterData = await authenticatedUserLookup(authorization_code);
+
+  const userId = req.user?.userId;
+
+  // const updatedUserData = await User.findByIdAndUpdate(userId, {
+  //   twitterData: {
+  //     name: userTwitterData?.data?.name,
+  //     username: userTwitterData?.data?.username,
+  //   }
+  // })
 
   return res.status(200).json(successResponse(200, "Twitter authorized successfully", null));
 };

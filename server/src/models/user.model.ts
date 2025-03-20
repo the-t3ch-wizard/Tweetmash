@@ -1,6 +1,15 @@
 import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
+const twitterDataSchema = new Schema({
+  name: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
+})
+
 export const userSchema = new Schema({
   name: {
     type: String,
@@ -36,6 +45,7 @@ export const userSchema = new Schema({
   country: {
     type: String,
   },
+  twitterData: twitterDataSchema
 }, {
   timestamps: true,
 })
