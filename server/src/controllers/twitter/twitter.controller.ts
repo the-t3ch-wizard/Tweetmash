@@ -38,9 +38,11 @@ const authorize = async (req: Req, res: Res) => {
     sameSite: "none",
   });
 
+  console.log("11 TEST", twitterToken)
+
   const authorization_code = getTwitterAuthorizationCodeFromCookie(req);
 
-  console.log("KK KORN", authorization_code);
+  console.log("22 TEST", authorization_code);
 
   const temp = await authenticatedUserLookup(authorization_code);
 

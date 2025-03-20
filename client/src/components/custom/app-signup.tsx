@@ -24,8 +24,13 @@ import {
 import { Input } from "@/components/ui/input"
 import { signup } from "@/services/user"
 import { useRef } from "react"
+import { Separator } from "../ui/separator"
+import { Twitter } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 export const AppSignup = () => {
+
+  const navigate = useNavigate();
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -42,10 +47,11 @@ export const AppSignup = () => {
   async function onSubmit(values: z.infer<typeof userSignupSchema>) {
     try {
       const response = await signup(values)
+      navigate("/auth/twitter")
       form.reset()
       closeButtonRef.current?.click()
       window.location.reload()
-      return toast.success(response.message || 'Signup successful')
+      // toast.success(response.message || 'Signup successful')
     } catch (error: any) {
       console.log('ERROR', error)
       return toast.error(error?.response?.data?.message || error?.message || 'Something went wrong')

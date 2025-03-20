@@ -14,7 +14,7 @@ export const authenticatedUserLookup = async (authorization_code: string) => {
 
   const response = await axios.request(config);
 
-  console.log("LOLY LOL", response);
+  console.log("33 TEST", response);
   
   return response;
 

@@ -24,8 +24,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { useRef } from "react"
 import { login } from "@/services/user"
+import { useNavigate } from "react-router-dom"
 
 export const AppLogin = () => {
+
+  const navigate = useNavigate();
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -40,10 +43,11 @@ export const AppLogin = () => {
   async function onSubmit(values: z.infer<typeof userLoginSchema>) {
     try {
       const response = await login(values)
+      navigate("/auth/twitter")
       form.reset()
       closeButtonRef.current?.click()
       window.location.reload()
-      return toast.success(response.message || 'Login successful')
+      // toast.success(response.message || 'Login successful')
     } catch (error: any) {
       console.log('ERROR', error)
       return toast.error(error?.response?.data?.message || error?.message || 'Something went wrong')

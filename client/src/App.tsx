@@ -27,7 +27,7 @@ function App() {
               <Route path="twitter/callback" element={<AuthTwitterCallback />} />
             </Route>
             
-            <Route path="twitter-base" element={<TwitterBase />} />
+            <Route path="dashboard" element={<TwitterBase />} />
           </> :
           null
         }
