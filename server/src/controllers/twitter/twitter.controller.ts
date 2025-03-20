@@ -39,26 +39,25 @@ const authorize = async (req: Req, res: Res) => {
     sameSite: "none",
   });
 
-  console.log("11 TEST", twitterToken)
-
   const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
-
-  console.log("22 TEST", authorization_code);
 
   const userTwitterData = await authenticatedUserLookup(authorization_code);
 
   const userId = req.user?.userId;
 
   const updatedUserData = await User.findByIdAndUpdate(userId, {
-    twitterData: {
-      name: userTwitterData?.data?.name,
-      username: userTwitterData?.data?.username,
+    $set: {
+      twitterData: {
+        name: userTwitterData?.data?.name,
+        username: userTwitterData?.data?.username,
+      }
     }
-  })
+  }).select('_id')
 
-  console.log("update", updatedUserData);
-
-  return res.status(200).json(successResponse(200, "Twitter authorized successfully", null));
+  return res.status(200).json(successResponse(200, "Twitter authorized successfully", {
+    name: userTwitterData?.data?.name,
+    username: userTwitterData?.data?.username,
+  }));
 };
 
 const getBasicDetails = async (req: Req, res: Res) => {
