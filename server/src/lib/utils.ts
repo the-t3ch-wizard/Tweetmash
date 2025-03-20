@@ -2,6 +2,7 @@ import axios from "axios";
 import { logger } from "./logger";
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import { env } from "../config/env";
+import { Req } from "../types/types";
 
 export const asyncHandler = (fn: any) => async (req: any, res: any, next: any) => {
   try {
@@ -51,3 +52,8 @@ export const encodeBase64 = (clientId: string, clientSecret: string) => {
   return encoded;
 };
 
+export const getTwitterAuthorizationCodeFromCookie = (req: Req) => {
+  const { twitterToken } = req.cookies;
+  const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
+  return authorization_code;
+}

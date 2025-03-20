@@ -1,8 +1,9 @@
 import { env } from "../../config/env";
-import { encodeBase64, errorResponse, successResponse } from "../../lib/utils";
+import { encodeBase64, errorResponse, getTwitterAuthorizationCodeFromCookie, successResponse } from "../../lib/utils";
 import { Req, Res } from "../../types/types";
 import qs from "qs";
 import axios from "axios";
+import { authenticatedUserLookup } from "../../lib/api/twitter/twitter";
 
 const authorize = async (req: Req, res: Res) => {
 
@@ -29,11 +30,19 @@ const authorize = async (req: Req, res: Res) => {
 
   const {data : twitterToken} = await axios.request(config);
 
+  if (!twitterToken) return res.status(400).json(errorResponse(400, "Unable to authorize twitter"));
+
   res.cookie("twitterToken", twitterToken, {
     httpOnly: true,
     secure: true,
     sameSite: "none",
   });
+
+  const authorization_code = getTwitterAuthorizationCodeFromCookie(req);
+
+  console.log("KK KORN", authorization_code);
+
+  const temp = await authenticatedUserLookup(authorization_code);
 
   return res.status(200).json(successResponse(200, "Twitter authorized successfully", null));
 };
@@ -50,7 +59,6 @@ const getBasicDetails = async (req: Req, res: Res) => {
     url: 'https://api.twitter.com/2/users/me',
     headers: { 
       'Authorization': authorization_code,
-      'Cookie': '__cf_bm=Q5zSfZ81E8xWwLTp6R5CXHA5k4GJ_aItDXUjlqvNQwM-1742466085-1.0.1.1-1byP1Zo7YVZbvlQDwxAgTGJ81XJZy6IXwzO6Pn47nGqNaYP1pcg9v8kGRESNZ7o1Y3lbRixC48hReAai093QnGvUSgKg2NZss.LDDKLH3_c; guest_id=v1%3A174232347687444935; guest_id_ads=v1%3A174232347687444935; guest_id_marketing=v1%3A174232347687444935; personalization_id="v1_xVlIIR0LVcg95qkbM9gadA=="'
     }
   };
 

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 export const TwitterBase = () => {
 
   useEffect(() => {
-    getTwitterBasicDetails();
+    // getTwitterBasicDetails();
   }, [])
 
   return (
