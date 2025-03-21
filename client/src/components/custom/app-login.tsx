@@ -43,7 +43,7 @@ export const AppLogin = () => {
   async function onSubmit(values: z.infer<typeof userLoginSchema>) {
     try {
       const response = await login(values)
-      navigate("/auth/twitter")
+      navigate("/connect/twitter")
       form.reset()
       closeButtonRef.current?.click()
       window.location.reload()

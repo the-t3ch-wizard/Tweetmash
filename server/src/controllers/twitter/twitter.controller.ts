@@ -1,10 +1,11 @@
 import { env } from "../../config/env";
-import { encodeBase64, errorResponse, getTwitterAuthorizationCodeFromCookie, successResponse } from "../../lib/utils";
+import { errorResponse, extractOAuthData, parseOAuthString, successResponse } from "../../lib/utils";
 import { Req, Res } from "../../types/types";
 import qs from "qs";
 import axios from "axios";
 import { authenticatedUserLookup } from "../../lib/api/twitter/twitter";
 import { User } from "../../models/user.model";
+import { getOAuthInstance } from "../../lib/oauthHelper";
 
 const authorize = async (req: Req, res: Res) => {
 
@@ -60,45 +61,96 @@ const authorize = async (req: Req, res: Res) => {
   }));
 };
 
-const getBasicDetails = async (req: Req, res: Res) => {
+const initializeAuthorization = async (req: Req, res: Res) => {
 
-  const { twitterToken } = req.cookies;
+  const oauth = getOAuthInstance();
 
-  const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
-
-  let config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'https://api.twitter.com/2/users/me',
-    headers: { 
-      'Authorization': authorization_code,
-    }
+  const optionsForTwitterRequestToken = {
+    url: "https://api.x.com/oauth/request_token",
+    method: "POST",
+    data: { oauth_callback: "oob" },
   };
 
-  const {data: response} = await axios.request(config);
+  const authHeader = oauth.toHeader(oauth.authorize(optionsForTwitterRequestToken));
 
-  // try {
-  //   const {data: response} = await axios.request(config);
-  // } catch (error: any) {
-    /*
-    FIX
-    if the access token is expired then generate new token using refresh token
+  const response = await axios.post(optionsForTwitterRequestToken.url, null, {
+    headers: {
+      Authorization: authHeader["Authorization"],
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
 
-    this is error?.response?.data for providing wrong access token
-    {
-      title: 'Unsupported Authentication',
-      detail: 'Authenticating with OAuth 2.0 Application-Only is forbidden for this endpoint.  Supported authentication types are [OAuth 1.0a User Context, OAuth 2.0 User Context].',
-      type: 'https://api.twitter.com/2/problems/unsupported-authentication',
-      status: 403
+  const oauthData = extractOAuthData(response.data);
+
+  if (String(oauthData.oauth_callback_confirmed) === "true"){
+    return res.status(200).json(successResponse(200, "Initialize twitter authorization successfully", {
+      oauth_token: oauthData.oauth_token
+    }));
+  }
+  
+  return res.status(401).json(errorResponse(401, "Unable to initialize twitter authorization"));
+
+}
+
+export const getAccessToken = async (req: Req, res: Res) => {
+  try {
+
+    const { oauth_verifier, oauth_token } = req.query; // Extract from request
+    if (!oauth_verifier || !oauth_token) {
+      return res.status(400).json(errorResponse(400, "Missing OAuth verifier or token"));
     }
-    // if (Number(error?.status) === 403 || Number(error?.response?.data?.status) === 403)
-    */
-  // }
 
-  return res.status(200).json(successResponse(200, "Twitter authorized successfully", response.data));
+    const oauth = getOAuthInstance();
+
+    const request_data = {
+      url: "https://api.x.com/oauth/access_token",
+      method: "POST",
+    };
+
+    const authHeader = oauth.toHeader(oauth.authorize(request_data));
+
+    const response = await axios.post(request_data.url, null, {
+      params: { oauth_verifier: String(oauth_verifier), oauth_token: String(oauth_token) },
+      headers: {
+        Authorization: authHeader["Authorization"],
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    const parsedData = parseOAuthString(response.data);
+
+    res.cookie("twitterToken", parsedData, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    return res.status(200).json(successResponse(200, "Accessed token successfully", {
+      username: parsedData?.screen_name
+    }));
+  } catch (error: any) {
+    console.log("ERROR",error);
+    res.status(500).json({ error: error.response?.data || error.message || "" });
+  }
+};
+
+const getBasicDetails = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+
+  const userData = await User.findOne({
+    _id: userId,
+  }).select("twitterData")
+
+  return res.status(200).json(successResponse(200, "Twitter authorized successfully", {
+    name: userData?.twitterData?.name,
+    username: userData?.twitterData?.username,
+  }));
 }
 
 export const twitter = {
   authorize,
+  initializeAuthorization,
+  getAccessToken,
   getBasicDetails,
 };

@@ -12,3 +12,5 @@ authRoutes.post("/logout", asyncHandler(user.logout))
 authRoutes.get("/who-am-i", asyncHandler(user.whoAmI))
 
 authRoutes.post("/twitter", asyncHandler(twitter.authorize))
+authRoutes.post("/init/twitter", asyncHandler(twitter.initializeAuthorization))
+authRoutes.post("/connect/twitter", asyncHandler(twitter.getAccessToken))

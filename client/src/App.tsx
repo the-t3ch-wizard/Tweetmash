@@ -5,9 +5,9 @@ import { AboutUs } from './app/about-us/AboutUs'
 import { ContactUs } from './app/contact-us/ContactUs'
 import { useAppSelector } from './lib/store/hooks/hooks'
 import { NotFound } from './app/404-not-found/NotFound'
-import { AuthTwitter } from './app/auth/twitter/AuthTwitter'
-import { AuthTwitterCallback } from './app/auth/twitter/callback/AuthTwitterCallback'
-import { TwitterBase } from './app/twitter-base/TwitterBase'
+import { ConnectTwitter } from './app/connect/twitter/ConnectTwitter'
+import { Dashboard } from './app/dashboard/Dashboard'
+import { AddTweet } from './app/add/AddTweet'
 
 function App() {
 
@@ -22,12 +22,12 @@ function App() {
         {
           loggedInStatus ?
           <>
-            <Route path="auth" element={<Outlet />}>
-              <Route path="twitter" element={<AuthTwitter />} />
-              <Route path="twitter/callback" element={<AuthTwitterCallback />} />
+            <Route path="connect" element={<Outlet />}>
+              <Route path="twitter" element={<ConnectTwitter />} />
             </Route>
             
-            <Route path="dashboard" element={<TwitterBase />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="post" element={<AddTweet />} />
           </> :
           null
         }

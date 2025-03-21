@@ -57,3 +57,21 @@ export const getTwitterAuthorizationCodeFromCookie = (req: Req) => {
   const authorization_code = twitterToken.token_type + " " + twitterToken.access_token;
   return authorization_code;
 }
+
+export const extractOAuthData = (response: string) => {
+  const params = new URLSearchParams(response);
+  
+  return {
+    oauth_token: params.get("oauth_token"),
+    oauth_token_secret: params.get("oauth_token_secret"),
+    oauth_callback_confirmed: params.get("oauth_callback_confirmed")
+  };
+}
+
+export const parseOAuthString = (oauthString: string) => {
+  return oauthString.split('&').reduce((acc, param) => {
+    let [key, value] = param.split('=');
+    acc[key] = value;
+    return acc;
+  }, {} as { [key: string]: string })
+}
