@@ -2,10 +2,13 @@ import { model, Schema } from "mongoose";
 import bcrypt from "bcrypt";
 
 const twitterDataSchema = new Schema({
-  name: {
+  username: {
     type: String,
   },
-  username: {
+  oauth_token: {
+    type: String,
+  },
+  oauth_token_secret: {
     type: String,
   },
 })

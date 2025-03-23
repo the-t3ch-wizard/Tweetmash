@@ -27,7 +27,6 @@ export const ConnectTwitterStep2 = () => {
         return;
       }
       const data = await connectTwitter(oauth_token, value)
-      console.log("DATA", data)
       
       dispatch(setConnectionStage(3))
     } catch (error: any) {
@@ -75,7 +74,6 @@ export const ConnectTwitterStep2 = () => {
 
       <CardFooter className="flex justify-between">
         <Button className="w-full" onClick={completeConnectingTwitterHandler}>
-          <RiTwitterXLine size="3rem" />
           <p>
             Proceed
           </p>

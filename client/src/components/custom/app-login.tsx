@@ -25,10 +25,13 @@ import { Input } from "@/components/ui/input"
 import { useRef } from "react"
 import { login } from "@/services/user"
 import { useNavigate } from "react-router-dom"
+import { useAppDispatch } from "@/lib/store/hooks/hooks"
+import { setUserDetails } from "@/lib/store/features/user/userSlice"
 
 export const AppLogin = () => {
 
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -43,11 +46,23 @@ export const AppLogin = () => {
   async function onSubmit(values: z.infer<typeof userLoginSchema>) {
     try {
       const response = await login(values)
-      navigate("/connect/twitter")
+      console.log("RES LOGIN", response);
+      dispatch(setUserDetails({
+        _id: response?.data?.id,
+        name: response?.data?.name,
+        email: response?.data?.email,
+        twitterUsername: response?.data?.twitterUsername,
+        twitterConnected: response?.data?.twitterConnected ? response?.data?.twitterConnected : false,
+      }))
+      
+      if (response?.data?.twitterConnected === true){
+        navigate("/dashboard")
+      } else {
+        navigate("/connect/twitter")
+      }
       form.reset()
       closeButtonRef.current?.click()
       window.location.reload()
-      // toast.success(response.message || 'Login successful')
     } catch (error: any) {
       console.log('ERROR', error)
       return toast.error(error?.response?.data?.message || error?.message || 'Something went wrong')

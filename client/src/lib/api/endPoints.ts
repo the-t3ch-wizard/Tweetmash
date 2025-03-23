@@ -8,6 +8,11 @@ const API_ENDPOINTS = {
   AUTHORIZE_TWITTER: "/auth/twitter",
   INITIALIZE_TWITTER_AUTHORIZATION: "/auth/init/twitter",
   CONNECT_TWITTER: "/auth/connect/twitter",
+  DISCONNECT_TWITTER: "/auth/disconnect/twitter",
+
+  TWITTER_TWEET: "/twitter/tweet",
+  GET_ALL_TWEETS: "/twitter/tweets",
+  SCHEDULE_TWEET: "/twitter/schedule-tweet",
 
   BASIC_TWITTER_DETAILS: "/twitter/basic-details",
 };

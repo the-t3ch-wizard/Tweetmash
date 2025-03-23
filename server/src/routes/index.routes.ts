@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { asyncHandler, successResponse } from "../lib/utils";
-import { user } from "../controllers/user/user.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { userRoutes } from "./user/user.routes";
 import { authRoutes } from "./auth/auth.routes";
@@ -14,9 +13,9 @@ router.get("/health-check", asyncHandler((req: any, res: any) => {
 
 router.use("/auth", authRoutes)
 
-router.use("/twitter", twitterRoutes)
-
 router.use(asyncHandler(authMiddleware));
+
+router.use("/twitter", twitterRoutes)
 
 router.use("/user", userRoutes)
 

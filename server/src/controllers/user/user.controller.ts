@@ -59,7 +59,9 @@ const login = async (req: Req, res: Res) => {
 
   let userFound = await User.findOne({
     email,
-  });
+  })
+  .select("_id name email password twitterData")
+
   if (!userFound) {
     return res.status(400).json(errorResponse(400, "User not found"));
   }
@@ -74,6 +76,8 @@ const login = async (req: Req, res: Res) => {
       id: userFound._id,
       name: userFound.name,
       email: userFound.email,
+      twitterUsername: userFound.twitterData?.username,
+      twitterConnected: (userFound.twitterData?.username && userFound.twitterData?.oauth_token && userFound.twitterData?.oauth_token_secret) ? true : false,
     },
     env.JWTSECRETKEY,
     {
@@ -86,6 +90,24 @@ const login = async (req: Req, res: Res) => {
     sameSite: "none",
   });
   // had to set options for token as per mode of server
+
+  if ((userFound?.twitterData?.username?.length && userFound?.twitterData?.username.length > 0) && (userFound?.twitterData?.oauth_token && userFound?.twitterData?.oauth_token.length > 0) && (userFound?.twitterData?.oauth_token_secret && userFound?.twitterData?.oauth_token_secret.length > 0)){
+    res.cookie("twitterToken", userFound?.twitterData, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    return res.status(200).json(
+      successResponse(200, "User logged in successfully", {
+        id: userFound._id,
+        name: userFound.name,
+        email: userFound.email,
+        twitterUsername: userFound?.twitterData?.username,
+        twitterConnected: true,
+      })
+    );
+  }
 
   return res.status(200).json(
     successResponse(200, "User logged in successfully", {
@@ -106,6 +128,8 @@ const whoAmI = async (req: Req, res: Res) => {
   }
 
   const decoded: any = jwt.verify(authToken, env.JWTSECRETKEY);
+  console.log("decoded", decoded);
+  
   if (!decoded) {
     return res.status(401).json(errorResponse(401, "Invalid token"));
   }
@@ -124,6 +148,8 @@ const whoAmI = async (req: Req, res: Res) => {
       _id: decoded?.id,
       name: decoded?.name,
       email: decoded?.email,
+      twitterUsername: decoded?.twitterUsername,
+      twitterConnected: decoded?.twitterConnected,
     })
   );
 };

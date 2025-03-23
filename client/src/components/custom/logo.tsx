@@ -6,7 +6,7 @@ export const Logo = () => {
       <Twitter className='text-xl text-primary' />
       <h1 className='text-xl font-geist-800 text-primary'>
         
-        Shit Poster
+        Tweetmash
 
       </h1>
     </div>

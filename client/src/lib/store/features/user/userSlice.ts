@@ -5,8 +5,9 @@ const initialState = {
   userDetails: {
     _id: undefined,
     name: undefined,
-    username: undefined,
     email: undefined,
+    twitterUsername: undefined,
+    twitterConnected: false,
   }
 }
 
@@ -28,10 +29,17 @@ export const counterSlice = createSlice({
     },
     clearUserDetails: (state) => {
       state.userDetails = initialState.userDetails;
-    }
+    },
+    setTwitterConnected: (state, action) => {
+      state.userDetails.twitterConnected = action.payload
+    },
+    clearTwitterDetails: (state) => {
+      state.userDetails.twitterConnected = false
+      state.userDetails.twitterUsername = undefined
+    },
   },
 })
 
-export const { setUserLoggedInStatus, clearUserLoggedInStatus, setUserDetails, clearUserDetails } = counterSlice.actions
+export const { setUserLoggedInStatus, clearUserLoggedInStatus, setUserDetails, clearUserDetails, setTwitterConnected, clearTwitterDetails } = counterSlice.actions
 
 export default counterSlice.reducer;

@@ -8,7 +8,7 @@ export const AppNavbar = () => {
   return (
     <div className='w-full h-16 px-4 sticky bg-background top-0 z-50 flex justify-between items-center border-b-2 border-border'>
 
-      <div className='flex justify-center items-center'>
+      <div className='md:hidden flex justify-center items-center'>
         <SidebarTrigger />
       </div>
 

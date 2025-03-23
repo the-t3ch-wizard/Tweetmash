@@ -8,6 +8,7 @@ import { loggerMiddleware } from './src/middlewares/logger.middleware';
 import rootRouter from './src/routes/index.routes';
 import connectDB from './src/config/database';
 import { env } from './src/config/env';
+import './src/config/cronJobs';
 
 const swaggerDocument = require('./src/docs/swagger-output.json');
 

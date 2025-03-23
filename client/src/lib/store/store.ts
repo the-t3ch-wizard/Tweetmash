@@ -2,6 +2,7 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import counterReducer from "./features/counter/counterSlice"
 import userReducer from "./features/user/userSlice"
 import connectTwitterReducer from "./features/connectTwitter/connectTwitterSlice"
+import tweetReducer from "./features/tweet/tweetSlice"
 
 const rootReducer = combineReducers({
   // reducer made for testing purpose
@@ -9,6 +10,7 @@ const rootReducer = combineReducers({
   
   user: userReducer,
   connectTwitter: connectTwitterReducer,
+  tweet: tweetReducer,
 
 })
 

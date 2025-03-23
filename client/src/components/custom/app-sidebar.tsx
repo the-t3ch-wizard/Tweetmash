@@ -10,7 +10,7 @@ import {
   SidebarMenuItem,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { Home, Info, LayoutDashboard, LogOut, MessageSquareWarning } from "lucide-react"
+import { BadgePlus, CalendarClock, Home, Info, LayoutDashboard, LogOut, MessageSquareWarning } from "lucide-react"
 import { ModeToggle } from "./mode-toggle"
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
@@ -65,14 +65,19 @@ export function AppSidebar() {
   const setupSidebarMenuItems = async () => {
     setMenuItems([
       {
-        title: "Home",
-        url: "/",
-        icon: Home,
-      },
-      {
         title: "Dashboard",
         url: "/dashboard",
         icon: LayoutDashboard,
+      },
+      {
+        title: "Post Tweet",
+        url: "/post-tweet",
+        icon: BadgePlus,
+      },
+      {
+        title: "Schedule Tweet",
+        url: "/schedule-tweet",
+        icon: CalendarClock,
       },
     ])
 
@@ -109,7 +114,7 @@ export function AppSidebar() {
             <ModeToggle />
           </SidebarGroupLabel>
 
-          <SidebarGroupContent>
+          <SidebarGroupContent className="pt-3">
             <SidebarMenu>
               {menuItems.map((item, idx) => {
                 return (<SidebarMenuItem key={idx}>
@@ -143,14 +148,8 @@ export function AppSidebar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-background">
-                  <DropdownMenuLabel>
-                    {
-                      userDetails.name
-                    }
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
                     <DropdownMenuItem>
-                    <Link to={`/p/${userDetails._id}`} className="w-full flex gap-2 justify-start items-center">
+                    <Link to={`/profile`} className="w-full flex gap-2 justify-start items-center">
                       <HiUserCircle className=" w-4" />
                       Profile
                     </Link>

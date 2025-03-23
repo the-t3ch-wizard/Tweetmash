@@ -30,7 +30,7 @@ export const HomeLayout = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <SidebarProvider defaultOpen={false}>
+      <SidebarProvider defaultOpen={true}>
 
         <AppSidebar />
 

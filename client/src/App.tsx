@@ -7,7 +7,9 @@ import { useAppSelector } from './lib/store/hooks/hooks'
 import { NotFound } from './app/404-not-found/NotFound'
 import { ConnectTwitter } from './app/connect/twitter/ConnectTwitter'
 import { Dashboard } from './app/dashboard/Dashboard'
-import { AddTweet } from './app/add/AddTweet'
+import { AddTweet } from './app/post-tweet/AddTweet'
+import { SchedulePost } from './app/schedule-tweet/SchedulePost'
+import { Profile } from './app/profile/Profile'
 
 function App() {
 
@@ -27,7 +29,10 @@ function App() {
             </Route>
             
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="post" element={<AddTweet />} />
+            <Route path="post-tweet" element={<AddTweet />} />
+            <Route path="schedule-tweet" element={<SchedulePost />} />
+
+            <Route path="profile" element={<Profile />} />
           </> :
           null
         }

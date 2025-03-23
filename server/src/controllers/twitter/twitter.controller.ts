@@ -3,9 +3,13 @@ import { errorResponse, extractOAuthData, parseOAuthString, successResponse } fr
 import { Req, Res } from "../../types/types";
 import qs from "qs";
 import axios from "axios";
-import { authenticatedUserLookup } from "../../lib/api/twitter/twitter";
+import { addTweet, authenticatedUserLookup, deleteTweet } from "../../lib/api/twitter/twitter";
 import { User } from "../../models/user.model";
 import { getOAuthInstance } from "../../lib/oauthHelper";
+import { logger } from "../../lib/logger";
+import { Tweet } from "../../models/tweet.model";
+import { generateTweetContent } from "../../lib/api/ai/gemini";
+import jwt from "jsonwebtoken";
 
 const authorize = async (req: Req, res: Res) => {
 
@@ -62,6 +66,7 @@ const authorize = async (req: Req, res: Res) => {
 };
 
 const initializeAuthorization = async (req: Req, res: Res) => {
+  logger.info("Get twitter request token")
 
   const oauth = getOAuthInstance();
 
@@ -93,9 +98,10 @@ const initializeAuthorization = async (req: Req, res: Res) => {
 }
 
 export const getAccessToken = async (req: Req, res: Res) => {
+  logger.info("Get twitter access token")
   try {
 
-    const { oauth_verifier, oauth_token } = req.query; // Extract from request
+    const { oauth_verifier, oauth_token } = req.query;
     if (!oauth_verifier || !oauth_token) {
       return res.status(400).json(errorResponse(400, "Missing OAuth verifier or token"));
     }
@@ -125,12 +131,95 @@ export const getAccessToken = async (req: Req, res: Res) => {
       sameSite: "none",
     });
 
+    const userId = req.user?.userId;
+
+    const updatedUserData = await User.findByIdAndUpdate(userId, {
+      $set: {
+        twitterData: {
+          username: parsedData?.screen_name,
+          oauth_token: parsedData?.oauth_token,
+          oauth_token_secret: parsedData?.oauth_token_secret,
+        }
+      }
+    }).select('_id')
+
+    const { authToken } = req.cookies;
+
+    const decoded: any = jwt.verify(authToken, env.JWTSECRETKEY);
+
+    const token = jwt.sign(
+      {
+        id: decoded.id,
+        name: decoded.name,
+        email: decoded.email,
+        twitterUsername: parsedData?.screen_name,
+        twitterConnected: (parsedData?.screen_name && parsedData?.oauth_token && parsedData?.oauth_token_secret) ? true : false,
+      },
+      env.JWTSECRETKEY,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
     return res.status(200).json(successResponse(200, "Accessed token successfully", {
       username: parsedData?.screen_name
     }));
   } catch (error: any) {
     console.log("ERROR",error);
     res.status(500).json({ error: error.response?.data || error.message || "" });
+  }
+};
+
+export const invalidateToken = async (req: Req, res: Res) => {
+  logger.info("Invalidate access token")
+  try {
+
+    const userId = req.user?.userId;
+
+    const updatedUserData = await User.findByIdAndUpdate(userId, {
+      $set: {
+        twitterData: {}
+      }
+    }).select('_id twitterData')
+
+    res.clearCookie("twitterToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    const { authToken } = req.cookies;
+
+    const decoded: any = jwt.verify(authToken, env.JWTSECRETKEY);
+
+    const token = jwt.sign(
+      {
+        id: decoded.id,
+        name: decoded.name,
+        email: decoded.email,
+      },
+      env.JWTSECRETKEY,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    return res.status(200).json(successResponse(200, "Accessed token invalidated successfully", null));
+  } catch (error: any) {
+    console.log("ERROR",error);
+    res.status(500).json({ error: error.response?.data || error.message || "Unable to invalidate token" });
   }
 };
 
@@ -143,9 +232,89 @@ const getBasicDetails = async (req: Req, res: Res) => {
   }).select("twitterData")
 
   return res.status(200).json(successResponse(200, "Twitter authorized successfully", {
-    name: userData?.twitterData?.name,
     username: userData?.twitterData?.username,
   }));
+
+}
+
+const postTweet = async (req: Req, res: Res) => {
+
+  const { twitterToken } = req.cookies;
+  const tweetContent = req.body.tweetContent;
+
+  const newTweet = await addTweet(twitterToken.oauth_token, twitterToken.oauth_token_secret, tweetContent);
+
+  const newTweetData = await Tweet.create({
+    userId: req.user?.userId,
+    tweetId: newTweet?.data?.id,
+    content: newTweet?.data?.text,
+    scheduledTime: new Date(),
+    status: "posted",
+  });
+
+  return res.status(200).json(successResponse(200, "Tweet posted successfully", {
+    tweetId: newTweet?.data?.id,
+    content: newTweet?.data?.text,
+  }));
+
+}
+
+const getAllTweets = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+
+  const tweets = await Tweet.find({
+    userId: userId,
+  })
+  .select("tweetId content status scheduledTime createdAt")
+  .sort({ scheduledTime: -1 });
+
+  return res.status(200).json(successResponse(200, "All tweets fetched successfully", tweets));
+
+}
+
+const deleteTweetById = async (req: Req, res: Res) => {
+
+  const { twitterToken } = req.cookies;
+
+  const {tweetId, id} = req.query;
+
+  if (tweetId === undefined) {
+    return res.status(400).json(errorResponse(400, "Missing tweetId"));
+  }
+  
+  const deletedTweet = await deleteTweet(twitterToken.oauth_token, twitterToken.oauth_token_secret, String(tweetId));
+
+  const userId = req.user?.userId;
+
+  const deletedTweetData = await Tweet.findOneAndDelete({
+    _id: id,
+    userId: userId,
+  });
+
+  return res.status(200).json(successResponse(200, "Tweet deleted successfully", deletedTweetData));
+
+}
+
+const scheduleTweet = async (req: Req, res: Res) => {
+  
+  const { topic, scheduledTime, includeHashtags, recurrence, tweetLength, tone } = req.body;
+
+  const tweetContent = await generateTweetContent(topic, includeHashtags, tweetLength, tone);
+
+  const newScheduledTweetData = await Tweet.create({
+    userId: req.user?.userId,
+
+    content: tweetContent,
+    topic,
+    scheduledTime,
+    includeHashtags,
+    recurrence,
+    tweetLength,
+    tone,
+  });
+
+  return res.status(200).json(successResponse(200, "Tweet scheduled successfully", newScheduledTweetData));
 }
 
 export const twitter = {
@@ -153,4 +322,9 @@ export const twitter = {
   initializeAuthorization,
   getAccessToken,
   getBasicDetails,
+  postTweet,
+  getAllTweets,
+  deleteTweetById,
+  scheduleTweet,
+  invalidateToken,
 };
