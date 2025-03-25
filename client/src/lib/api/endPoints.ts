@@ -13,6 +13,10 @@ const API_ENDPOINTS = {
   TWITTER_TWEET: "/twitter/tweet",
   GET_ALL_TWEETS: "/twitter/tweets",
   SCHEDULE_TWEET: "/twitter/schedule-tweet",
+  COUNT_TWEETS_BY_MONTH: "/twitter/count-tweets",
+  COUNT_POSTED_TWEETS_BY_MONTH: "/twitter/count-posted-tweets",
+  COUNT_PENDING_TWEETS_BY_MONTH: "/twitter/count-pending-tweets",
+  TWEETS_DATA_BY_MONTH: "/twitter/count-tweets-data",
 
   BASIC_TWITTER_DETAILS: "/twitter/basic-details",
 };

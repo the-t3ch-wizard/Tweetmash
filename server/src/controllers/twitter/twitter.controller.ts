@@ -317,6 +317,114 @@ const scheduleTweet = async (req: Req, res: Res) => {
   return res.status(200).json(successResponse(200, "Tweet scheduled successfully", newScheduledTweetData));
 }
 
+const getAllTweetsCountByMonth = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+  let {month: currentMonth} = req.query;
+
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(currentYear, Number(currentMonth), 1);
+  const endDate = new Date(currentYear, Number(currentMonth)+1, 0, 23, 59, 59, 999);
+
+  const tweets = await Tweet.countDocuments({
+    userId: userId,
+    scheduledTime: {
+      $gte: startDate,
+      $lte: endDate,
+    }
+  })
+
+  return res.status(200).json(successResponse(200, "All tweets count fetched successfully", tweets));
+}
+
+const getAllPostedTweetsCountByMonth = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+  let {month: currentMonth} = req.query;
+
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(currentYear, Number(currentMonth), 1);
+  const endDate = new Date(currentYear, Number(currentMonth)+1, 0, 23, 59, 59, 999);
+
+  const tweets = await Tweet.countDocuments({
+    userId: userId,
+    status: "posted",
+    scheduledTime: {
+      $gte: startDate,
+      $lte: endDate,
+    }
+  })
+
+  return res.status(200).json(successResponse(200, "All posted tweets count fetched successfully", tweets));
+}
+
+const getAllPendingTweetsCountByMonth = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+  let {month: currentMonth} = req.query;
+
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(currentYear, Number(currentMonth), 1);
+  const endDate = new Date(currentYear, Number(currentMonth)+1, 0, 23, 59, 59, 999);
+
+  const tweets = await Tweet.countDocuments({
+    userId: userId,
+    status: "pending",
+    scheduledTime: {
+      $gte: startDate,
+      $lte: endDate,
+    }
+  })
+
+  return res.status(200).json(successResponse(200, "All pending tweets count fetched successfully", tweets));
+}
+
+const getAllTweetsDataForChartByMonth = async (req: Req, res: Res) => {
+
+  const userId = req.user?.userId;
+  let {month: currentMonth} = req.query;
+
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(currentYear, Number(currentMonth), 1); // ✅ First day of the month
+  const endDate = new Date(currentYear, Number(currentMonth) + 1, 0, 23, 59, 59, 999); // ✅ Last day of the month
+  const totalDays = endDate.getDate(); // ✅ Get exact total days in the month
+
+  // Fetch both posted and scheduled tweets in parallel
+  const [postedTweets, scheduledTweets] = await Promise.all([
+    Tweet.find({ userId, status: "posted", scheduledTime: { $gte: startDate, $lte: endDate } }).select("scheduledTime"),
+    Tweet.find({ userId, status: "pending", scheduledTime: { $gte: startDate, $lte: endDate } }).select("scheduledTime")
+  ]);
+
+  // ✅ Initialize object to hold counts for every day in the current month
+  const dailyStats: Record<string, { posted: number; scheduled: number }> = {};
+
+  for (let day = 1; day <= totalDays; day++) {
+    const dateStr = new Date(currentYear, Number(currentMonth), day).toISOString().split("T")[0]; // Ensure correct YYYY-MM-DD
+    dailyStats[dateStr] = { posted: 0, scheduled: 0 };
+  }
+
+  // ✅ Populate actual tweet data
+  postedTweets.forEach((tweet: any) => {
+    const date = tweet.scheduledTime.toISOString().split("T")[0];
+    if (dailyStats[date]) dailyStats[date].posted++;
+  });
+
+  scheduledTweets.forEach((tweet: any) => {
+    const date = tweet.scheduledTime.toISOString().split("T")[0];
+    if (dailyStats[date]) dailyStats[date].scheduled++;
+  });
+
+  // ✅ Convert object to sorted array
+  const combinedData = Object.entries(dailyStats).map(([date, counts]) => ({
+    date,
+    posted: counts.posted,
+    scheduled: counts.scheduled,
+    total: counts.posted + counts.scheduled, // ✅ Ensure total is sum of both
+  }));
+  
+  return res.status(200).json(successResponse(200, "All tweets count fetched successfully", combinedData));
+}
+
 export const twitter = {
   authorize,
   initializeAuthorization,
@@ -327,4 +435,8 @@ export const twitter = {
   deleteTweetById,
   scheduleTweet,
   invalidateToken,
+  getAllTweetsCountByMonth,
+  getAllPostedTweetsCountByMonth,
+  getAllPendingTweetsCountByMonth,
+  getAllTweetsDataForChartByMonth,
 };

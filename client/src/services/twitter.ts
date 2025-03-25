@@ -59,3 +59,27 @@ export const postScheduleTweet = async (data: schedulePostValues) => {
 
   return response;
 }
+
+export const getAllTweetsCountByMonth = async (month: number) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.COUNT_TWEETS_BY_MONTH + `?month=${month}`)
+
+  return response;
+}
+
+export const getAllPostedTweetsCountByMonth = async (month: number) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.COUNT_POSTED_TWEETS_BY_MONTH + `?month=${month}`)
+
+  return response;
+}
+
+export const getAllPendingTweetsCountByMonth = async (month: number) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.COUNT_PENDING_TWEETS_BY_MONTH + `?month=${month}`)
+
+  return response;
+}
+
+export const getAllTweetsDataByMonth = async (month: number) => {
+  const response = await axiosInstance.get(API_ENDPOINTS.TWEETS_DATA_BY_MONTH + `?month=${month}`)
+
+  return response;
+}

@@ -15,19 +15,8 @@ export const Home = () => {
   
   return (
     <div className="w-full flex flex-col gap-4 justify-start items-center p-4">
-      
-      {
-        tweets.map((tweet: {
-          _id: string | undefined;
-          tweetId: string | undefined;
-          content: string | undefined;
-          status: string | undefined,
-          scheduledTime: Date | string | undefined,
-          createdAt: string | undefined;
-        }) => (
-          <Tweet key={tweet._id} id={tweet._id || ""} tweetId={tweet.tweetId || ""} content={tweet.content || ""} createdAt={tweet.createdAt || ""} status={tweet.status || ""} scheduledTime={tweet.scheduledTime || ""} />
-        ))
-      }
+
+      HOME
       
     </div>
   )

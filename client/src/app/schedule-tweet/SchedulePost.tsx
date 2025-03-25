@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
 import { addOneTweet } from "@/lib/store/features/tweet/tweetSlice";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
 import { postScheduleTweet, postTweet } from "@/services/twitter";
 import { schedulePostSchema, schedulePostValues } from "@/validations/tweet/schedule-post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsGlobeCentralSouthAsia, BsTwitterX } from "react-icons/bs";
 import { toast } from "sonner";
@@ -45,6 +43,7 @@ export const SchedulePost = () => {
     }
     try {
       const response = await postScheduleTweet(data);
+      dispatch(addOneTweet(response.data.data));
       form.reset();
       toast.success("Tweet scheduled successfully");
     } catch (error: any) {

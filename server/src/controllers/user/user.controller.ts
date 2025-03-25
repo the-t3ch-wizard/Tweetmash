@@ -128,7 +128,6 @@ const whoAmI = async (req: Req, res: Res) => {
   }
 
   const decoded: any = jwt.verify(authToken, env.JWTSECRETKEY);
-  console.log("decoded", decoded);
   
   if (!decoded) {
     return res.status(401).json(errorResponse(401, "Invalid token"));
