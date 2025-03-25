@@ -10,10 +10,13 @@ import { Dashboard } from './app/dashboard/Dashboard'
 import { AddTweet } from './app/post-tweet/AddTweet'
 import { SchedulePost } from './app/schedule-tweet/SchedulePost'
 import { Profile } from './app/profile/Profile'
+import { useAnalytics } from './lib/analytics/useAnalytics'
 
 function App() {
 
   const loggedInStatus = useAppSelector((state) => state.user.loggedInStatus)
+
+  useAnalytics();
 
   return (
     <Routes>
