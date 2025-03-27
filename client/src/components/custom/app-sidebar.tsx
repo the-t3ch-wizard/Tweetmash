@@ -35,11 +35,11 @@ export function AppSidebar() {
       url: "/contact-us",
       icon: MessageSquareWarning,
     },
-    {
-      title: "About us",
-      url: "/about-us",
-      icon: Info,
-    },
+    // {
+    //   title: "About us",
+    //   url: "/about-us",
+    //   icon: Info,
+    // },
   ]
 
   // Menu menuItems.

@@ -33,11 +33,11 @@ export const AppNavbar = () => {
     //   url: "/#testimonials",
     //   icon: null,
     // },
-    {
-      title: "About us",
-      url: "/about-us",
-      icon: null,
-    },
+    // {
+    //   title: "About us",
+    //   url: "/about-us",
+    //   icon: null,
+    // },
     {
       title: "Contact us",
       url: "/contact-us",
@@ -82,11 +82,11 @@ export const AppNavbar = () => {
       url: "/contact-us",
       icon: MessageSquareWarning,
     },
-    {
-      title: "About us",
-      url: "/about-us",
-      icon: Info,
-    },
+    // {
+    //   title: "About us",
+    //   url: "/about-us",
+    //   icon: Info,
+    // },
   ]
 
   const logoutHandler = async () => {

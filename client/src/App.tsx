@@ -22,7 +22,7 @@ function App() {
     <Routes>
       <Route path="/" element={<HomeLayout />} >
         <Route path="" element={<Home />} />
-        <Route path="about-us" element={<AboutUs />} />
+        {/* <Route path="about-us" element={<AboutUs />} /> */}
         <Route path="contact-us" element={<ContactUs />} />
         {
           loggedInStatus ?

@@ -15,6 +15,7 @@ import { Logo } from "@/components/custom/logo";
 import { BsTwitterX } from "react-icons/bs";
 import { SiLinkedin } from "react-icons/si";
 import { TestimonialCarousel } from "@/components/custom/testimonial-carousel";
+import { toast } from "sonner";
 
 export const Home = () => {
 
@@ -390,8 +391,29 @@ export const Home = () => {
                 </li>
               </ul>
               <div className="mt-20">
-                <Link to="/contact-us">
-                  <Button className="w-full font-medium" variant="secondary">Upgrade to Premium</Button>
+                <Link to="/contact-us" state={{
+                  subject: "premium"
+                }}>
+                  <Button className="w-full font-medium" variant="secondary" onClick={() => {
+                    toast.success(
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-yellow-500" />
+                          <span className="font-medium">Tell us about your premium needs!</span>
+                        </div>
+                        <div className="pl-6 text-sm">
+                          <ul className="list-disc space-y-1">
+                            <li>Which premium features you need most</li>
+                            <li>How many accounts you want to manage</li>
+                            <li>Any special requirements for your workflow</li>
+                          </ul>
+                        </div>
+                      </div>,
+                      {
+                        duration: 10000, // Extra long duration for reading time
+                      }
+                    )
+                  }}>Upgrade to Premium</Button>
                 </Link>
               </div>
             </div>
