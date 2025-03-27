@@ -21,6 +21,7 @@ cron.schedule("* * * * *", async () => {
     .populate({
       path: "userId",
       select: "twitterData",
+      options: { lean: true }
     })
     .select("content userId")
     .lean();
@@ -30,7 +31,8 @@ cron.schedule("* * * * *", async () => {
       const oauth_token_secret = (tweet.userId as any)?.twitterData?.oauth_token_secret;
 
       const newTweet = await addTweet(oauth_token, oauth_token_secret, String(tweet.content));
-      await Tweet.findByIdAndUpdate(tweet._id, { status: "posted" });
+      
+      if (newTweet?.data?.id) await Tweet.findByIdAndUpdate(tweet._id, { status: "posted" });
 
       if (newTweet?.data?.id) logger.info(`Tweet posted successfully as ${newTweet?.data?.id}`);
     }
