@@ -26,8 +26,6 @@ import { Logo } from "./logo"
 
 export function AppSidebar() {
 
-  const dispatch = useAppDispatch();
-
   const loggedInStatus = useAppSelector((state) => state.user.loggedInStatus);
   const userDetails = useAppSelector((state) => state.user.userDetails);
 
@@ -80,19 +78,12 @@ export function AppSidebar() {
         icon: CalendarClock,
       },
     ])
-
-    // try {
-    //   dispatch(getAndSetConversationListForSideBar());
-    // } catch (error : any) {
-    //   return toast.error(error?.message || "Something went wrong!");
-    // }
   }
 
   const logoutHandler = async () => {
     try {
       const response = await logout();
       if (response.success){
-        // toast.success(response.message || "Logged out!");
         window.location.reload();
       }
     } catch (error: any) {
@@ -100,8 +91,6 @@ export function AppSidebar() {
       toast.error(error?.response?.data?.message || error?.message || 'Logout failed')
     }
   }
-
-  const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Sidebar>

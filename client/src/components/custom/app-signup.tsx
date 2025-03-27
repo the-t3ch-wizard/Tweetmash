@@ -27,8 +27,12 @@ import { useRef } from "react"
 import { Separator } from "../ui/separator"
 import { Twitter } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { ReactNode } from "react";
 
-export const AppSignup = () => {
+export const AppSignup = ({ title, className } : {
+  title?: ReactNode;
+  className?: string;
+}) => {
 
   const navigate = useNavigate();
 
@@ -51,7 +55,6 @@ export const AppSignup = () => {
       form.reset()
       closeButtonRef.current?.click()
       window.location.reload()
-      // toast.success(response.message || 'Signup successful')
     } catch (error: any) {
       console.log('ERROR', error)
       return toast.error(error?.response?.data?.message || error?.message || 'Something went wrong')
@@ -61,10 +64,13 @@ export const AppSignup = () => {
   return (
     <Drawer>
 
-      <DrawerTrigger>
-        {/* FIX this has to be removed from button to div inorder to avoid error */}
-        <Button variant='default' className='w-full flex justify-center items-center gap-2'>
-          Sign up
+      <DrawerTrigger className="w-full">
+        <Button variant='default' className={`w-full flex justify-center items-center gap-2 ${className}`}>
+          {
+            title ?
+            title :
+            "Sign up"
+          }
         </Button>
       </DrawerTrigger>
 

@@ -46,7 +46,6 @@ export const AppLogin = () => {
   async function onSubmit(values: z.infer<typeof userLoginSchema>) {
     try {
       const response = await login(values)
-      console.log("RES LOGIN", response);
       dispatch(setUserDetails({
         _id: response?.data?.id,
         name: response?.data?.name,
@@ -72,8 +71,7 @@ export const AppLogin = () => {
   return (
     <Drawer>
 
-      <DrawerTrigger>
-        {/* FIX this has to be removed from button to div inorder to avoid error */}
+      <DrawerTrigger className="w-full">
         <Button variant='outline' className='w-full flex justify-center items-center gap-2'>
           Log in
         </Button>
