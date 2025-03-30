@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { deleteTweet } from "@/services/twitter";
 import { useAppDispatch } from "@/lib/store/hooks/hooks";
-import { removeTweetUsingId } from "@/lib/store/features/tweet/tweetSlice";
+import { getAllTweetsInRedux, removeTweetUsingId } from "@/lib/store/features/tweet/tweetSlice";
 
 export const Tweet = ({ id, tweetId, content, status, scheduledTime, createdAt }: {
   id: string;
@@ -24,6 +24,19 @@ export const Tweet = ({ id, tweetId, content, status, scheduledTime, createdAt }
 
   const deleteTweetHandler = async () => {
     try {
+      if (!tweetId) {
+        if (!id) {
+          toast.error("This tweet data is incomplete. Please refresh the page and try again.");
+        } else {
+          toast.error("This tweet hasn't been posted yet or needs refreshing.", {
+            action: {
+              label: 'Refresh',
+              onClick: () => dispatch(getAllTweetsInRedux())
+            }
+          });
+        }
+        return;
+      }
       const deletedTweet = await deleteTweet(tweetId, id);
       dispatch(removeTweetUsingId(id));
       toast.success(deletedTweet.data?.message || "Tweet deleted successfully")
