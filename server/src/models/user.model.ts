@@ -48,7 +48,19 @@ export const userSchema = new Schema({
   country: {
     type: String,
   },
-  twitterData: twitterDataSchema
+  twitterData: twitterDataSchema,
+  planType: {
+    type: String,
+    enum: ["free", "pro", "enterprise"],
+    default: "free",
+  },
+  lastTweetDate: {
+    type: Date,
+  },
+  dailyTweetCount: {
+    type: Number,
+    default: 0,
+  },
 }, {
   timestamps: true,
 })

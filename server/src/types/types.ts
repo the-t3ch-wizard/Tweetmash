@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Document } from 'mongoose';
 
 export interface Req extends Request {
   user?: {
@@ -14,23 +15,23 @@ export interface Res extends Response {
 export interface Next extends NextFunction {
 }
 
-export interface Contest {
-  attended: boolean;
-  problemsSolved: number;
-  totalProblems: number;
-  rating: number;
-  ranking: number;
-  contest: {
-    title: string;
-    startTime: number;
+export interface IGlobalMetrics extends Document {
+  dailyTweetCount: number;
+  lastResetDate: Date;
+  monthlyTweetCount: number;
+  monthResetDate: Date;
+  totalTweets: number;
+  totalUsers: number;
+  activeUsers: number;
+  planDistribution: {
+    free: number;
+    pro: number;
+    enterprise: number;
   };
+  lastMaintenance?: Date;
+  apiCallsToday: number;
+  
+  resetDailyCounts(): Promise<IGlobalMetrics>;
+  resetMonthlyCounts(): Promise<IGlobalMetrics>;
 }
 
-export interface ContestActivity {
-  problemsSolved: number;
-  totalProblems: number;
-  rating: number;
-  ranking: number;
-  title: string;
-  startTime: number;
-}

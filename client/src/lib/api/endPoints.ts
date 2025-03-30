@@ -1,9 +1,17 @@
 
 const API_ENDPOINTS = {
-  SIGNUP: "/auth/signup",
-  LOGIN: "/auth/login",
-  LOGOUT: "/auth/logout",
-  WHO_AM_I: "/auth/who-am-i",
+
+  AUTH: {
+    SIGNUP: "/auth/signup",
+    LOGIN: "/auth/login",
+    LOGOUT: "/auth/logout",
+    WHO_AM_I: "/auth/who-am-i",
+  },
+
+  USER: {
+    BASE: "/user",
+    REMAINING_TWEETS: () => `${API_ENDPOINTS.USER.BASE}/remaining-tweets`,
+  },
 
   AUTHORIZE_TWITTER: "/auth/twitter",
   INITIALIZE_TWITTER_AUTHORIZATION: "/auth/init/twitter",

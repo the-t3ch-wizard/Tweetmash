@@ -10,16 +10,26 @@ export const getFormattedPostDate = (date: string | Date) => {
   const now = moment();
   const postDate = moment(date);
 
-  if (now.isSame(postDate, 'day')) {
-    const hoursAgo = now.diff(postDate, 'hours');
-    if (hoursAgo < 1) {
-      const minutesAgo = now.diff(postDate, 'minutes');
-      return `${minutesAgo} minutes ago`;
-    }
-    return `${hoursAgo} hours ago`;
-  } else if (now.isSame(postDate, 'year')) {
-    return postDate.format('DD MMM');
+  const diffInSeconds = postDate.diff(now, "seconds");
+  const absDiff = Math.abs(diffInSeconds);
+
+  if (absDiff < 60) {
+    return diffInSeconds < 0 ? `${absDiff} seconds ago` : `${absDiff} seconds later`;
+  }
+
+  const diffInMinutes = postDate.diff(now, "minutes");
+  if (Math.abs(diffInMinutes) < 60) {
+    return diffInMinutes < 0 ? `${Math.abs(diffInMinutes)} minutes ago` : `${Math.abs(diffInMinutes)} minutes later`;
+  }
+
+  const diffInHours = postDate.diff(now, "hours");
+  if (Math.abs(diffInHours) < 24) {
+    return diffInHours < 0 ? `${Math.abs(diffInHours)} hours ago` : `${Math.abs(diffInHours)} hours later`;
+  }
+
+  if (now.isSame(postDate, "year")) {
+    return postDate.format("DD MMM");
   } else {
-    return postDate.format('DD MMM YYYY');
+    return postDate.format("DD MMM YYYY");
   }
 };

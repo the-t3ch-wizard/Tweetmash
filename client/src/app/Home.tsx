@@ -517,58 +517,6 @@ export const Home = () => {
       </footer>
 
     </div>
-    // <div className="w-full flex min-h-screen flex-col">
-
-    //   <main className="flex-1">
-
-    //     {/* Final CTA */}
-    //     <section className="container py-12 md:py-24 lg:py-32 bg-[#1DA1F2]">
-    //       <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-    //         <h2 className="font-heading text-3xl font-bold leading-[1.1] sm:text-3xl md:text-4xl text-white">
-    //           Ready to Automate Your Tweets?
-    //         </h2>
-    //         <p className="max-w-[42rem] leading-normal text-white/80 sm:text-xl sm:leading-8">
-    //           Join thousands of users who are saving time and boosting engagement with Tweetmash.
-    //         </p>
-    //         <Button size="lg" variant="secondary" className="mt-6">
-    //           Try Tweetmash Free
-    //         </Button>
-    //       </div>
-    //     </section>
-    //   </main>
-
-    //   {/* Footer */}
-    //   <footer className="border-t py-6 md:py-0">
-    //     <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
-    //       <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-    //         <Twitter className="h-5 w-5 text-[#1DA1F2]" />
-    //         <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-    //           © 2025 Tweetmash. All rights reserved.
-    //         </p>
-    //       </div>
-    //       <div className="flex gap-4">
-    //         <Link
-    //           to="#"
-    //           className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-    //         >
-    //           Terms
-    //         </Link>
-    //         <Link
-    //           to="#"
-    //           className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-    //         >
-    //           Privacy
-    //         </Link>
-    //         <Link
-    //           to="#"
-    //           className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-    //         >
-    //           Contact
-    //         </Link>
-    //       </div>
-    //     </div>
-    //   </footer>
-    // </div>
   )
 
 

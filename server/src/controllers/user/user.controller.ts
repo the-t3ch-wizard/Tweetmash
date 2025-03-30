@@ -6,6 +6,7 @@ import { Req, Res } from "../../types/types";
 import bcrypt from "bcrypt";
 import { User } from "../../models/user.model";
 
+// Auth related controller methods
 const signup = async (req: Req, res: Res) => {
   logger.info("Signup user");
 
@@ -168,9 +169,43 @@ const logout = async (req: Req, res: Res) => {
     .json(successResponse(200, "User logged out successfully", null));
 };
 
+// User's data related controller methods
+const getRemainingTweets = async (req: Req, res: Res) => {
+  const userId = req.user?.userId;
+  const user = await User.findById(userId);
+  
+  if (!user) {
+    return res.status(404).json(errorResponse(404, "User not found"));
+  }
+
+  const today = new Date();
+  const lastTweetDate = user.lastTweetDate;
+  
+  // Reset counter if it's a new day
+  if (!lastTweetDate || lastTweetDate.getDate() !== today.getDate() || 
+      lastTweetDate.getMonth() !== today.getMonth() || 
+      lastTweetDate.getFullYear() !== today.getFullYear()) {
+    return res.status(200).json(successResponse(200, "Remaining tweets fetched", {
+      remaining: 3,
+      limit: 3,
+      plan: "free",
+      resetTime: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0), // Midnight tonight
+    }));
+  }
+
+  return res.status(200).json(successResponse(200, "Remaining tweets fetched", {
+    remaining: 3 - user.dailyTweetCount,
+    limit: 3,
+    plan: "free",
+    resetTime: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 0, 0, 0), // Midnight tonight
+  }));
+};
+
 export const user = {
   signup,
   login,
   whoAmI,
   logout,
+
+  getRemainingTweets,
 };

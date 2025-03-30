@@ -237,24 +237,43 @@ const getBasicDetails = async (req: Req, res: Res) => {
 
 }
 
-const postTweet = async (req: Req, res: Res) => {
+const postTweet = async (req: Req, res: Res) => { 
 
   const { twitterToken } = req.cookies;
   const tweetContent = req.body.tweetContent;
+  const userId = req.user?.userId;
+
+  // Check if user exists and is free
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json(errorResponse(404, "User not found"));
+  }
+
+  if (user.planType === "free" && user.dailyTweetCount >= 3) {
+    return res.status(429).json(errorResponse(429, "Free plan limit reached. You can only post 3 tweets per day."));
+  }
 
   const newTweet = await addTweet(twitterToken.oauth_token, twitterToken.oauth_token_secret, tweetContent);
 
   const newTweetData = await Tweet.create({
-    userId: req.user?.userId,
+    userId: userId,
     tweetId: newTweet?.data?.id,
     content: newTweet?.data?.text,
     scheduledTime: new Date(),
     status: "posted",
   });
 
+  // Update tweet count for free users
+  if (user.planType === "free") {
+    user.dailyTweetCount += 1;
+    user.lastTweetDate = new Date();
+    await user.save();
+  }
+
   return res.status(200).json(successResponse(200, "Tweet posted successfully", {
     tweetId: newTweet?.data?.id,
     content: newTweet?.data?.text,
+    remainingTweets: user.planType === "free" ? 3 - user.dailyTweetCount : "unlimited",
   }));
 
 }
@@ -297,14 +316,33 @@ const deleteTweetById = async (req: Req, res: Res) => {
 }
 
 const scheduleTweet = async (req: Req, res: Res) => {
-  
+
   const { topic, scheduledTime, includeHashtags, recurrence, tweetLength, tone } = req.body;
+  const userId = req.user?.userId;
+
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json(errorResponse(404, "User not found"));
+  }
+
+  // For immediate scheduled tweets (same day), check the limit
+  const scheduledDate = new Date(scheduledTime);
+  const today = new Date();
+  
+  if (user.planType === "free" && 
+      scheduledDate.getDate() === today.getDate() && 
+      scheduledDate.getMonth() === today.getMonth() && 
+      scheduledDate.getFullYear() === today.getFullYear()) {
+    
+    if (user.dailyTweetCount >= 3) {
+      return res.status(429).json(errorResponse(429, "Free plan limit reached. You can only schedule 3 tweets per day."));
+    }
+  }
 
   const tweetContent = await generateTweetContent(topic, includeHashtags, tweetLength, tone);
 
   const newScheduledTweetData = await Tweet.create({
-    userId: req.user?.userId,
-
+    userId,
     content: tweetContent,
     topic,
     scheduledTime,
@@ -314,7 +352,20 @@ const scheduleTweet = async (req: Req, res: Res) => {
     tone,
   });
 
-  return res.status(200).json(successResponse(200, "Tweet scheduled successfully", newScheduledTweetData));
+  // Update count if scheduled for today
+  if (user.planType === "free" && 
+      scheduledDate.getDate() === today.getDate() && 
+      scheduledDate.getMonth() === today.getMonth() && 
+      scheduledDate.getFullYear() === today.getFullYear()) {
+    user.dailyTweetCount += 1;
+    user.lastTweetDate = today;
+    await user.save();
+  }
+
+  return res.status(200).json(successResponse(200, "Tweet scheduled successfully", {
+    ...newScheduledTweetData.toObject(),
+    remainingTweets: user.planType === "free" ? 3 - user.dailyTweetCount : "unlimited",
+  }));
 }
 
 const getAllTweetsCountByMonth = async (req: Req, res: Res) => {
