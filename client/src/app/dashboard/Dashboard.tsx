@@ -126,6 +126,7 @@ export const Dashboard = () => {
           </TabsList>
           <TabsContent value="tweets" className="w-full py-2 flex flex-col gap-4 justify-start items-start">
             {
+              tweets.length > 0 ?
               tweets.map((tweet: {
                 _id: string | undefined;
                 tweetId: string | undefined;
@@ -135,7 +136,15 @@ export const Dashboard = () => {
                 createdAt: string | undefined;
               }) => (
                 <Tweet key={tweet._id} id={tweet._id || ""} tweetId={tweet.tweetId || ""} content={tweet.content || ""} createdAt={tweet.createdAt || ""} status={tweet.status || ""} scheduledTime={tweet.scheduledTime || ""} />
-              ))
+              )) :
+              <div className="w-full p-10 flex flex-col gap-3 justify-center items-center">
+                <p className="text-3xl font-bold">
+                  You haven’t posted any tweet using tweetmash.
+                </p>
+                <p className="text-muted-foreground text-lg">
+                  Once you do, those posts will show up here.
+                </p>
+              </div>
             }
           </TabsContent>
 

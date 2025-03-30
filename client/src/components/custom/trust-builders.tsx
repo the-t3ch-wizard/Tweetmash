@@ -23,7 +23,7 @@ export default function TrustBuilders() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <div className="bg-primary/10 p-2 rounded-full">
             <Heart className="h-5 w-5 text-primary" />
           </div>
@@ -33,7 +33,7 @@ export default function TrustBuilders() {
               Built nights & weekends to help fellow creators.
             </p>
           </div>
-        </div>
+        </div> */}
       </CardContent>
     </Card>
   )

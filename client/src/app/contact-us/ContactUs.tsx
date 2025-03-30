@@ -12,7 +12,7 @@ export const ContactUs = () => {
     <main className="container mx-auto px-4 py-12 max-w-6xl ">
       <PageHeader
         title="Reach Out!"
-        description="Got questions? Feature requests? Or just want give some feedback?"
+        description="Got questions? Feature requests? Or just want to give some feedback?"
         icon="📩"
       />
 

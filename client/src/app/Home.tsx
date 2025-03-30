@@ -1,10 +1,7 @@
-import { Tweet } from "@/components/custom/tweet";
 import { getAllTweetsInRedux } from "@/lib/store/features/tweet/tweetSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { useEffect, useState } from "react";
-
 import { Button } from "@/components/ui/button"
-import { ModeToggle as ThemeToggle } from "@/components/custom/mode-toggle"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, CheckCircle2, Clock, Hash, Lock, MessageSquare, Sparkles, Twitter } from "lucide-react"
@@ -14,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { Logo } from "@/components/custom/logo";
 import { BsTwitterX } from "react-icons/bs";
 import { SiLinkedin } from "react-icons/si";
-import { TestimonialCarousel } from "@/components/custom/testimonial-carousel";
 import { toast } from "sonner";
 
 export const Home = () => {
@@ -24,8 +20,6 @@ export const Home = () => {
   useEffect(() => {
     dispatch(getAllTweetsInRedux())
   }, [])
-
-  const tweets = useAppSelector((state) => state.tweet.tweets)
 
   const [videoPlayStatus, setVideoPlayStatus] = useState(false);
   
@@ -175,53 +169,51 @@ export const Home = () => {
           </div>
 
           <div className="w-full px-6 flex gap-6 justify-center items-center mt-12">
-            <Card className="h-56 w-72 flex flex-col justify-center items-start">
-              <CardHeader className="flex flex-row items-center gap-2">
+            <Card className="min-h-60 w-72 flex flex-col justify-center items-start">
+              <CardHeader className="w-full flex flex-row justify-start items-center gap-3 space-y-0">
                 <Sparkles className="h-6 w-6 text-[#1DA1F2]" />
                 <CardTitle>AI-Powered Tweets</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Just enter a topic, choose tone (funny, serious, angry), and let AI generate tweets that sound like
-                  you.
+                  Simply describe your topic and pick a tone (witty, professional, passionate) and let AI generate tweets. Perfect for when you're stuck or need fresh ideas.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="h-56 w-72 flex flex-col justify-center items-start">
-              <CardHeader className="flex flex-row items-center gap-2">
+            <Card className="min-h-60 w-72 flex flex-col justify-center items-start">
+              <CardHeader className="w-full flex flex-row justify-start items-center gap-3 space-y-0">
                 <Clock className="h-6 w-6 text-[#1DA1F2]" />
                 <CardTitle>Smart Scheduling</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Set one-time, daily, or weekly tweets. Works with cron-node for perfect timing when your audience is
-                  active.
+                  Post once, daily, or weekly - choose what works best for your content strategy. Set it and forget it - your content posts automatically.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="h-56 w-72 flex flex-col justify-center items-start">
-              <CardHeader className="flex flex-row items-center gap-2">
+            <Card className="min-h-60 w-72 flex flex-col justify-center items-start">
+              <CardHeader className="w-full flex flex-row justify-start items-center gap-3 space-y-0">
                 <Hash className="h-6 w-6 text-[#1DA1F2]" />
                 <CardTitle>Customizable Content</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  Need a viral tweet? Choose length, style, and add trending hashtags with one click for maximum
+                  Need a viral tweet? Choose style and add trending hashtags with one click for maximum
                   engagement.
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="h-56 w-72 flex flex-col justify-center items-start">
-              <CardHeader className="flex flex-row items-center gap-2">
+            <Card className="min-h-60 w-72 flex flex-col justify-center items-start">
+              <CardHeader className="w-full flex flex-row justify-start items-center gap-3 space-y-0">
                 <Lock className="h-6 w-6 text-[#1DA1F2]" />
                 <CardTitle>Secure & Reliable</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="text-base">
-                  No spam. No misuse. We use Twitter's official API securely. Your account, your control.
+                  No spam. No misuse. We follow Twitter's guidelines strictly. Your account, your control.
                 </CardDescription>
               </CardContent>
             </Card>
@@ -246,7 +238,7 @@ export const Home = () => {
             <div className="flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1DA1F2] text-white">2</div>
               <h3 className="mt-4 text-xl font-bold">Set Preferences</h3>
-              <p className="mt-2 text-muted-foreground">Pick topic, tone, length, and schedule time/date for your tweets.</p>
+              <p className="mt-2 text-muted-foreground">Pick topic, tone, and schedule time/date for your tweet.</p>
             </div>
             <div className="flex flex-col items-center text-center">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1DA1F2] text-white">3</div>
@@ -449,7 +441,7 @@ export const Home = () => {
               <AccordionItem value="item-3" className="rounded-md hover:bg-accent/20 border-0 border-b">
                 <AccordionTrigger  className="px-4 w-full hover:no-underline border-b text-base">Is my Twitter account safe?</AccordionTrigger>
                 <AccordionContent className="px-4 w-full pt-3 bg-accent/30 text-base">
-                  100%. We use Twitter's official API — no password storage. We only request the permissions needed to
+                  We use Twitter's official API — no password storage. We only request the permissions necessary to
                   post tweets on your behalf, and you can revoke access at any time.
                 </AccordionContent>
               </AccordionItem>

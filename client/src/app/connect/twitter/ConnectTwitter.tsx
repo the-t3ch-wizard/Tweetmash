@@ -11,7 +11,7 @@ export const ConnectTwitter = () => {
   const connectionStage = useAppSelector(state => state.connectTwitter.connectionStage)
   
   return (
-    <div className='w-full h-full  flex flex-col justify-center items-center p-4'>
+    <div className='w-full h-[45rem] flex flex-col justify-center items-center p-4'>
 
       {
         loading === true ? 
