@@ -50,6 +50,7 @@ const startServer = async () => {
     await connectDB();
     app.listen(env.PORT || 7000, () => {
       console.log('The server is running locally on port 7000: http://localhost:7000');
+      console.log('The api docs are available locally on port: http://localhost:7000/api-docs');
     });
   } catch (error) {
     console.error('Failed to connect to the database:', error);
