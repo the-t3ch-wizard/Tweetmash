@@ -4,6 +4,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 import { userRoutes } from "./user/user.routes";
 import { authRoutes } from "./auth/auth.routes";
 import { twitterRoutes } from "./twitter/twitter.routes";
+import { contactRoutes } from "./contact/contact.routes";
 
 const router = Router();
 
@@ -18,5 +19,7 @@ router.use(asyncHandler(authMiddleware));
 router.use("/twitter", twitterRoutes)
 
 router.use("/user", userRoutes)
+
+router.use("/contact", contactRoutes)
 
 export default router;

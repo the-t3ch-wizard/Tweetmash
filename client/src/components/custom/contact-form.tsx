@@ -1,9 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -11,21 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
-
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  subject: z.string({
-    required_error: "Please select a subject.",
-  }),
-  message: z.string().min(10, {
-    message: "Message must be at least 10 characters.",
-  }),
-})
+import { contactFormSchema } from "@/validations/contact/contact-form"
+import { sendContactUsMail } from "@/services/contact"
 
 export default function ContactForm({ name, email, subject, message } : {
   name?: string;
@@ -35,8 +20,8 @@ export default function ContactForm({ name, email, subject, message } : {
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof contactFormSchema>>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       name: name || "",
       email: email || "",
@@ -45,16 +30,19 @@ export default function ContactForm({ name, email, subject, message } : {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof contactFormSchema>) => {
     setIsSubmitting(true)
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false)
-      toast.success("Message sent!")
-      form.reset()
-    }, 1500)
-
     console.log(values)
+    try {
+      const response = await sendContactUsMail(values);
+      toast.success(response.message || "Contact details sent successfully")
+      form.reset()
+    } catch (error: any) {
+      console.log('error', error)
+      toast.error(error?.response?.data?.message || error?.message || "Failed to send details. Please try again later.")
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (

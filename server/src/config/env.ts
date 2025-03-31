@@ -17,4 +17,8 @@ export const env = {
   TWITTER_CLIENT_SECRET: String(process.env.TWITTER_CLIENT_SECRET),
   TWITTER_OAUTH_CONSUMER_KEY: String(process.env.TWITTER_OAUTH_CONSUMER_KEY),
   TWITTER_OAUTH_CONSUMER_SECRET: String(process.env.TWITTER_OAUTH_CONSUMER_SECRET),
+  EMAIL_USER: String(process.env.EMAIL_USER),
+  EMAIL_PASS: String(process.env.EMAIL_PASS),
+  EMAIL_HOST: String(process.env.EMAIL_HOST),
+  EMAIL_PORT: String(process.env.EMAIL_PORT),
 }

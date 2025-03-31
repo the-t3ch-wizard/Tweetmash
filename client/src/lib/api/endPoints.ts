@@ -13,6 +13,10 @@ const API_ENDPOINTS = {
     REMAINING_TWEETS: () => `${API_ENDPOINTS.USER.BASE}/remaining-tweets`,
   },
 
+  CONTACT: {
+    BASE: "/contact",
+  },
+
   AUTHORIZE_TWITTER: "/auth/twitter",
   INITIALIZE_TWITTER_AUTHORIZATION: "/auth/init/twitter",
   CONNECT_TWITTER: "/auth/connect/twitter",
