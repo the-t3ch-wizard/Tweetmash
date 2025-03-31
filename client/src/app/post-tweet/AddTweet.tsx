@@ -2,7 +2,7 @@ import { TweetLimitWrapper } from "@/components/custom/tweet-limit-wrapper";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { addOneTweet } from "@/lib/store/features/tweet/tweetSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
@@ -55,7 +55,7 @@ export const AddTweet = () => {
               </p>
               <BsTwitterX size="1.5rem" />
             </CardTitle>
-            <Separator />
+            <Progress value={percentage} className={`w-full h-[2px]`} />
           </CardHeader>
 
           <CardContent className="w-full flex flex-col items-end gap-2">
@@ -71,7 +71,7 @@ export const AddTweet = () => {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="tracker">
+                {/* <div className="tracker">
                   <svg className="h-10 w-10" viewBox="0 0 50 50">
                     <circle
                       cx="25"
@@ -90,7 +90,7 @@ export const AddTweet = () => {
                       )
                     }
                   </svg>
-                </div>
+                </div> */}
                 <Button className="w-40" disabled={!twitterConnected} onClick={handlePostTweet}>
                   Post
                 </Button>
