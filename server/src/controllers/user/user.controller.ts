@@ -162,6 +162,11 @@ const logout = async (req: Req, res: Res) => {
     secure: true,
     sameSite: "none",
   });
+  res.clearCookie("twitterToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   // had to set options for token as per mode of server
 
   return res

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { addOneTweet } from "@/lib/store/features/tweet/tweetSlice";
-import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { postTweet } from "@/services/twitter";
 import { useState } from "react";
 import { BsGlobeCentralSouthAsia, BsTwitterX } from "react-icons/bs";
@@ -16,6 +16,8 @@ export const AddTweet = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const twitterConnected = useAppSelector((state) => state.user.userDetails.twitterConnected)
 
   const [text, setText] = useState("");
 
@@ -89,7 +91,7 @@ export const AddTweet = () => {
                     }
                   </svg>
                 </div>
-                <Button className="w-40" onClick={handlePostTweet}>
+                <Button className="w-40" disabled={!twitterConnected} onClick={handlePostTweet}>
                   Post
                 </Button>
               </div>

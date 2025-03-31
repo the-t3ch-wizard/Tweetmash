@@ -67,8 +67,18 @@ export const userSchema = new Schema({
 
 userSchema.pre("save", async function (next) {
   let user = this;
-  user.password = await bcrypt.hash(user.password, 10);
-  next();
+  
+  // Only hash the password if it has been modified
+  if (!user.isModified("password")) {
+    return next();
+  }
+
+  try {
+    user.password = await bcrypt.hash(user.password, 10);
+    next();
+  } catch (error: any) {
+    return next(error);
+  }
 })
 
 export const User = model("User", userSchema)

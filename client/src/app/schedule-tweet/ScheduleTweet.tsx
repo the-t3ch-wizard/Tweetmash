@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator";
 import { addOneTweet } from "@/lib/store/features/tweet/tweetSlice";
-import { useAppDispatch } from "@/lib/store/hooks/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/store/hooks/hooks";
 import { postScheduleTweet, postTweet } from "@/services/twitter";
 import { schedulePostSchema, schedulePostValues } from "@/validations/tweet/schedule-post";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +26,8 @@ export const ScheduleTweet = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const twitterConnected = useAppSelector((state) => state.user.userDetails.twitterConnected)
 
   const form = useForm<schedulePostValues>({
     resolver: zodResolver(schedulePostSchema),
@@ -260,7 +262,7 @@ export const ScheduleTweet = () => {
                       Everyone can reply
                     </Badge>
                   </div>
-                  <Button type="submit">
+                  <Button type="submit" disabled={!twitterConnected}>
                     Schedule Tweet
                   </Button>
                 </div>
