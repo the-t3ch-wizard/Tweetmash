@@ -4,7 +4,6 @@ import { env } from "../../../config/env";
 export const generateTweetContent = async (
   topic: string,
   includeHashtags: boolean,
-  tweetLength: string,
   tone: string,
 ) => {
   

@@ -7,7 +7,6 @@ export const schedulePostSchema = z.object({
   }),
   includeHashtags: z.boolean().default(false),
   recurrence: z.enum(["none", "daily", "weekly"]).default("none"),
-  tweetLength: z.enum(["short", "medium", "long"]),
   tone: z.string().min(1, "Tone is required"),
 });
 

@@ -30,12 +30,8 @@ export const tweetSchema = new Schema({
   },
   recurrence: {
     type: String,
-    enum: ["none", "daily", "weekly"],
+    enum: ["none", "daily", "weekly", "monthly"],
     default: "none",
-  },
-  tweetLength: {
-    type: String,
-    enum: ["short", "medium", "long"],
   },
   tone: {
     type: String,

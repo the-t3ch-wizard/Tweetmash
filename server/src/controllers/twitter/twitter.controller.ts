@@ -317,7 +317,7 @@ const deleteTweetById = async (req: Req, res: Res) => {
 
 const scheduleTweet = async (req: Req, res: Res) => {
 
-  const { topic, scheduledTime, includeHashtags, recurrence, tweetLength, tone } = req.body;
+  const { topic, scheduledTime, includeHashtags, recurrence, tone } = req.body;
   const userId = req.user?.userId;
 
   const user = await User.findById(userId);
@@ -339,7 +339,7 @@ const scheduleTweet = async (req: Req, res: Res) => {
     }
   }
 
-  const tweetContent = await generateTweetContent(topic, includeHashtags, tweetLength, tone);
+  const tweetContent = await generateTweetContent(topic, includeHashtags, tone);
 
   const newScheduledTweetData = await Tweet.create({
     userId,
@@ -348,7 +348,6 @@ const scheduleTweet = async (req: Req, res: Res) => {
     scheduledTime,
     includeHashtags,
     recurrence,
-    tweetLength,
     tone,
   });
 

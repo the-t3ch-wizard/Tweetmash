@@ -218,37 +218,34 @@ export const ScheduleTweet = () => {
 
                 <FormField
                   control={form.control}
-                  name="tweetLength"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Tweet Length</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a length" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="short">Short</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="long">Long</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormDescription>The preferred length of your tweet.</FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="tone"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Tone</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Professional, Casual, Humorous" {...field} />
-                      </FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Select a fruit" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="professional">Professional</SelectItem>
+                          <SelectItem value="humorous">Humorous</SelectItem>
+                          <SelectItem value="inspirational">Inspirational</SelectItem>
+                          <SelectItem value="casual">Casual</SelectItem>
+                          <SelectItem value="sarcastic">Sarcastic</SelectItem>
+                          <SelectItem value="promotional">Promotional</SelectItem>
+                          <SelectItem value="educational">Educational</SelectItem>
+                          <SelectItem value="provocative">Provocative</SelectItem>
+                          <SelectItem value="empathetic">Empathetic</SelectItem>
+                          <SelectItem value="urgent">Urgent</SelectItem>
+                          <SelectItem value="storytelling">Storytelling</SelectItem>
+                          <SelectItem value="controversial">Controversial</SelectItem>
+                          <SelectItem value="whimsical">Whimsical</SelectItem>
+                          <SelectItem value="analytical">Analytical</SelectItem>
+                          <SelectItem value="minimalist">Minimalist</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormDescription>The tone of voice for your tweet.</FormDescription>
                       <FormMessage />
                     </FormItem>
