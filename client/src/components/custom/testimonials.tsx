@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useRef, useEffect } from "react"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
