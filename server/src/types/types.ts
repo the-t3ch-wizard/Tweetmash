@@ -6,6 +6,8 @@ export interface Req extends Request {
     userId: string;
     name: string;
     email: string;
+    planType?: string;
+    dailyTweetCount?: number;
   };
 }
 

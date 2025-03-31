@@ -6,7 +6,7 @@ export const schedulePostSchema = z.object({
     required_error: "Please select a date and time",
   }),
   includeHashtags: z.boolean().default(false),
-  recurrence: z.enum(["none", "daily", "weekly"]).default("none"),
+  recurrence: z.enum(["none", "daily", "weekly", "monthly", "yearly"]).default("none"),
   tone: z.string().min(1, "Tone is required"),
 });
 

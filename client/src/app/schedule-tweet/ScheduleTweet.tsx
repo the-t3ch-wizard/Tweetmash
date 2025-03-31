@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon, Clock, Crown, Sparkles } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -20,7 +20,43 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { format } from "date-fns"
 import { Badge } from "@/components/ui/badge";
 import { TweetLimitWrapper } from "@/components/custom/tweet-limit-wrapper";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { RiVipCrownFill } from "react-icons/ri";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+
+const toneItems = [
+  { value: "professional", label: "Professional", isPremium: false },
+  { value: "humorous", label: "Humorous", isPremium: false },
+  { value: "inspirational", label: "Inspirational", isPremium: false },
+  { value: "casual", label: "Casual", isPremium: false },
+  { value: "sarcastic", label: "Sarcastic", isPremium: false },
+  { value: "promotional", label: "Promotional", isPremium: false },
+  { value: "educational", label: "Educational", isPremium: false },
+  { value: "provocative", label: "Provocative", isPremium: false },
+  { value: "empathetic", label: "Empathetic", isPremium: false },
+  { value: "urgent", label: "Urgent", isPremium: false },
+  { value: "storytelling", label: "Storytelling", isPremium: false },
+  { value: "controversial", label: "Controversial", isPremium: false },
+  { value: "whimsical", label: "Whimsical", isPremium: false },
+  { value: "analytical", label: "Analytical", isPremium: false },
+  { value: "minimalist", label: "Minimalist", isPremium: false }
+];
+
+const recurrenceOptions = [
+  { value: "none", label: "None", isPremium: false },
+  { value: "daily", label: "Daily", isPremium: false },
+  { value: "weekly", label: "Weekly", isPremium: false },
+  { value: "monthly", label: "Monthly", isPremium: true },
+  { value: "yearly", label: "Yearly", isPremium: true },
+];
 
 export const ScheduleTweet = () => {
 
@@ -28,6 +64,9 @@ export const ScheduleTweet = () => {
   const dispatch = useAppDispatch();
 
   const twitterConnected = useAppSelector((state) => state.user.userDetails.twitterConnected)
+  const userPlan = useAppSelector((state) => state.user.userDetails.planType)
+
+  const [showUpgradeDialog, setShowUpgradeDialog] = useState(false)
 
   const form = useForm<schedulePostValues>({
     resolver: zodResolver(schedulePostSchema),
@@ -44,6 +83,14 @@ export const ScheduleTweet = () => {
     const scheduledDate = new Date(data.scheduledTime);
     if (scheduledDate <= currentDate) {
       toast.error("Scheduled time must be in the future");
+      return;
+    }
+
+    const selectedRecurrence = recurrenceOptions.find(option => option.value === data.recurrence);
+    const selectedTone = toneItems.find(option => option.value === data.tone);
+
+    if ((selectedRecurrence?.isPremium || selectedTone?.isPremium) && userPlan === "free") {
+      setShowUpgradeDialog(true)
       return;
     }
     try {
@@ -190,24 +237,18 @@ export const ScheduleTweet = () => {
                           defaultValue={field.value}
                           className="flex flex-col space-y-1"
                         >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="none" />
-                            </FormControl>
-                            <FormLabel className="font-normal">None</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="daily" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Daily</FormLabel>
-                          </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
-                            <FormControl>
-                              <RadioGroupItem value="weekly" />
-                            </FormControl>
-                            <FormLabel className="font-normal">Weekly</FormLabel>
-                          </FormItem>
+                          {
+                            recurrenceOptions.map(({ value, label, isPremium }) => (
+                              <FormItem key={value} className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value={value} />
+                                </FormControl>
+                                <FormLabel className="font-normal flex gap-2 justify-center items-center">
+                                  {label} {isPremium && <RiVipCrownFill />}
+                                </FormLabel>
+                              </FormItem>
+                            ))
+                          }
                         </RadioGroup>
                       </FormControl>
                       <FormDescription>How often this tweet should be posted.</FormDescription>
@@ -229,21 +270,11 @@ export const ScheduleTweet = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="professional">Professional</SelectItem>
-                          <SelectItem value="humorous">Humorous</SelectItem>
-                          <SelectItem value="inspirational">Inspirational</SelectItem>
-                          <SelectItem value="casual">Casual</SelectItem>
-                          <SelectItem value="sarcastic">Sarcastic</SelectItem>
-                          <SelectItem value="promotional">Promotional</SelectItem>
-                          <SelectItem value="educational">Educational</SelectItem>
-                          <SelectItem value="provocative">Provocative</SelectItem>
-                          <SelectItem value="empathetic">Empathetic</SelectItem>
-                          <SelectItem value="urgent">Urgent</SelectItem>
-                          <SelectItem value="storytelling">Storytelling</SelectItem>
-                          <SelectItem value="controversial">Controversial</SelectItem>
-                          <SelectItem value="whimsical">Whimsical</SelectItem>
-                          <SelectItem value="analytical">Analytical</SelectItem>
-                          <SelectItem value="minimalist">Minimalist</SelectItem>
+                          {
+                            toneItems.map(({ value, label }) => 
+                              <SelectItem key={value} value={value}>{label}</SelectItem>
+                            )
+                          }
                         </SelectContent>
                       </Select>
                       <FormDescription>The tone of voice for your tweet.</FormDescription>
@@ -268,6 +299,51 @@ export const ScheduleTweet = () => {
 
           </CardContent>
         </Card>
+
+        <Dialog open={showUpgradeDialog} onOpenChange={setShowUpgradeDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex gap-2">
+                <RiVipCrownFill />
+                Upgrade Required
+              </DialogTitle>
+              <DialogDescription>
+                The options you selected require a premium subscription. Upgrade now to access premium features.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowUpgradeDialog(false)}>
+                Cancel
+              </Button>
+              <Link to="/contact-us" state={{
+                  subject: "premium"
+                }}>
+                  <Button onClick={() => {
+                    toast.success(
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-yellow-500" />
+                          <span className="font-medium">Tell us about your premium needs!</span>
+                        </div>
+                        <div className="pl-6 text-sm">
+                          <ul className="list-disc space-y-1">
+                            <li>Which premium features you need most</li>
+                            <li>How many accounts you want to manage</li>
+                            <li>Any special requirements for your workflow</li>
+                          </ul>
+                        </div>
+                      </div>,
+                      {
+                        duration: 10000, // Extra long duration for reading time
+                      }
+                    )
+                  }}>
+                    Upgrade Now
+                  </Button>
+                </Link>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </TweetLimitWrapper>
       
     </div>

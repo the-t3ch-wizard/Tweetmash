@@ -61,7 +61,7 @@ const login = async (req: Req, res: Res) => {
   let userFound = await User.findOne({
     email,
   })
-  .select("_id name email password twitterData")
+  .select("_id name email password twitterData planType")
 
   if (!userFound) {
     return res.status(400).json(errorResponse(400, "User not found"));
@@ -79,6 +79,7 @@ const login = async (req: Req, res: Res) => {
       email: userFound.email,
       twitterUsername: userFound.twitterData?.username,
       twitterConnected: (userFound.twitterData?.username && userFound.twitterData?.oauth_token && userFound.twitterData?.oauth_token_secret) ? true : false,
+      planType: userFound.planType
     },
     env.JWTSECRETKEY,
     {
@@ -150,6 +151,7 @@ const whoAmI = async (req: Req, res: Res) => {
       email: decoded?.email,
       twitterUsername: decoded?.twitterUsername,
       twitterConnected: decoded?.twitterConnected,
+      planType: decoded?.planType,
     })
   );
 };

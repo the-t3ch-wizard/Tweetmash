@@ -8,6 +8,7 @@ const initialState = {
     email: undefined,
     twitterUsername: undefined,
     twitterConnected: false,
+    planType: undefined,
   }
 }
 

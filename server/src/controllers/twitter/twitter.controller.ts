@@ -338,27 +338,10 @@ const scheduleTweet = async (req: Req, res: Res) => {
   const { topic, scheduledTime, includeHashtags, recurrence, tone } = req.body;
   const userId = req.user?.userId;
 
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json(errorResponse(404, "User not found"));
-  }
-
-  // For immediate scheduled tweets (same day), check the limit
-  const scheduledDate = new Date(scheduledTime);
-  const today = new Date();
-  
-  if (user.planType === "free" && 
-      scheduledDate.getDate() === today.getDate() && 
-      scheduledDate.getMonth() === today.getMonth() && 
-      scheduledDate.getFullYear() === today.getFullYear()) {
-    
-    if (user.dailyTweetCount >= 3) {
-      return res.status(429).json(errorResponse(429, "Free plan limit reached. You can only schedule 3 tweets per day."));
-    }
-  }
-
+  // Generate tweet content
   const tweetContent = await generateTweetContent(topic, includeHashtags, tone);
 
+  // Create the scheduled tweet
   const newScheduledTweetData = await Tweet.create({
     userId,
     content: tweetContent,
@@ -367,17 +350,14 @@ const scheduleTweet = async (req: Req, res: Res) => {
     includeHashtags,
     recurrence,
     tone,
+    status: "pending" // Ensure status is set
   });
 
-  // Update count if scheduled for today
-  if (user.planType === "free" && 
-      scheduledDate.getDate() === today.getDate() && 
-      scheduledDate.getMonth() === today.getMonth() && 
-      scheduledDate.getFullYear() === today.getFullYear()) {
-    user.dailyTweetCount += 1;
-    user.lastTweetDate = today;
-    await user.save();
-  }
+  // Update metrics (middleware handles limits, so we can safely increment)
+  await User.findByIdAndUpdate(userId, {
+    $inc: { dailyTweetCount: 1 },
+    lastTweetDate: new Date()
+  });
 
   await GlobalMetrics.updateOne(
     {}, 
@@ -386,15 +366,18 @@ const scheduleTweet = async (req: Req, res: Res) => {
         dailyTweetCount: 1,
         monthlyTweetCount: 1,
         totalTweets: 1,
+        [`planDistribution.${req?.user?.planType}`]: 1 
       } 
     },
     { upsert: true }
   );
 
   return res.status(200).json(successResponse(200, "Tweet scheduled successfully", {
-    ...newScheduledTweetData.toObject(),
-    remainingTweets: user.planType === "free" ? 3 - user.dailyTweetCount : "unlimited",
-  }));
+      ...newScheduledTweetData.toObject(),
+      remainingTweets: req?.user?.planType === "free" 
+        ? 3 - (Number(req?.user?.dailyTweetCount ? req?.user?.dailyTweetCount : 0) + 1) 
+        : "unlimited",
+    }));
 }
 
 const getAllTweetsCountByMonth = async (req: Req, res: Res) => {
