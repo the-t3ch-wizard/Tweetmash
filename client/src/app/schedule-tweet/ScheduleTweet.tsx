@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { TweetLimitWrapper } from "@/components/custom/tweet-limit-wrapper";
 import { useNavigate } from "react-router-dom";
 
-export const SchedulePost = () => {
+export const ScheduleTweet = () => {
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -130,7 +130,31 @@ export const SchedulePost = () => {
                           </div>
                         </PopoverContent>
                       </Popover>
-                      <FormDescription>When your tweet should be published.</FormDescription>
+                      <FormDescription>
+                        <div className="flex justify-start items-center gap-2">
+                          <p>
+                            When your tweet should be published.
+                          </p>
+                          <Button variant="outline" onClick={(e) => {
+                            e.preventDefault();
+                            const date = new Date()
+                            date.setTime(date.getTime() + 2 * 60 * 1000)
+                            field.onChange(date)
+                          }} className="text-foreground rounded-2xl" size="sm">
+                            <Clock />
+                            After 2 minutes
+                          </Button>
+                          <Button variant="outline" onClick={(e) => {
+                            e.preventDefault();
+                            const date = new Date()
+                            date.setTime(date.getTime() + 5 * 60 * 1000)
+                            field.onChange(date)
+                          }} className="text-foreground rounded-2xl" size="sm">
+                            <Clock />
+                            After 5 minutes
+                          </Button>
+                        </div>
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}

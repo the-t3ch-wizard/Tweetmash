@@ -8,7 +8,7 @@ import { NotFound } from './app/404-not-found/NotFound'
 import { ConnectTwitter } from './app/connect/twitter/ConnectTwitter'
 import { Dashboard } from './app/dashboard/Dashboard'
 import { AddTweet } from './app/post-tweet/AddTweet'
-import { SchedulePost } from './app/schedule-tweet/SchedulePost'
+import { ScheduleTweet } from './app/schedule-tweet/ScheduleTweet'
 import { Profile } from './app/profile/Profile'
 import { useAnalytics } from './lib/analytics/useAnalytics'
 
@@ -33,7 +33,7 @@ function App() {
             
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="post-tweet" element={<AddTweet />} />
-            <Route path="schedule-tweet" element={<SchedulePost />} />
+            <Route path="schedule-tweet" element={<ScheduleTweet />} />
 
             <Route path="profile" element={<Profile />} />
           </> :
