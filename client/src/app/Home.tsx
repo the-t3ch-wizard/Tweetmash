@@ -22,6 +22,7 @@ export const Home = () => {
   }, [])
 
   const [videoPlayStatus, setVideoPlayStatus] = useState(false);
+  const loggedInStatus = useAppSelector((state) => state.user.loggedInStatus);
   
   return (
     <div className="w-full h-[100rem] flex flex-col gap-4 justify-start items-center">
@@ -38,14 +39,27 @@ export const Home = () => {
               Let AI craft & schedule tweets for you — just pick a topic, tone, and time.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 mt-6">
-              <AppSignup title={
-                <>
-                  <p>
-                    Get Started
-                  </p>
-                  <ArrowRight />
-                </>
-              } className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white" />
+              {
+                loggedInStatus ?
+                <Link to="/schedule-tweet">
+                  <Button size="lg" variant="outline" className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white">
+                    <>
+                      <p>
+                        Get Started
+                      </p>
+                      <ArrowRight />
+                    </>
+                  </Button>
+                </Link> :
+                <AppSignup title={
+                  <>
+                    <p>
+                      Get Started
+                    </p>
+                    <ArrowRight />
+                  </>
+                } className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white" />
+              }
               <Link to="#features">
                 <Button size="lg" variant="outline">
                   View Features
@@ -250,13 +264,26 @@ export const Home = () => {
           </div>
 
           <div className="mx-auto flex max-w-[58rem] justify-center mt-12">
-            <AppSignup title={
-              <>
-                <p>
-                  Get Started Now
-                </p>
-              </>
-            } className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white" />
+            {
+              loggedInStatus ?
+              <Link to="/schedule-tweet">
+                <Button size="lg" variant="outline" className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white">
+                  <>
+                    <p>
+                      Get Started Now
+                    </p>
+                    <ArrowRight />
+                  </>
+                </Button>
+              </Link> :
+              <AppSignup title={
+                <>
+                  <p>
+                    Get Started Now
+                  </p>
+                </>
+              } className="flex px-7 gap-2 justify-center items-center bg-[#1DA1F2] hover:bg-[#1a91da] text-white" />
+            }
           </div>
         </section>
 
@@ -325,7 +352,15 @@ export const Home = () => {
                 </li>
               </ul>
               <div className="mt-20 w-full">
-                <AppSignup title="Get Started Free" />
+                {
+                  loggedInStatus ?
+                  <Link to="/schedule-tweet">
+                    <Button variant="default" className="w-full">
+                      Get Started Free
+                    </Button>
+                  </Link> :
+                  <AppSignup title="Get Started Free" />
+                }
               </div>
             </div>
 
