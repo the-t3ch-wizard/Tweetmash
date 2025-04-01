@@ -1,17 +1,17 @@
-import { FaSquareXTwitter } from "react-icons/fa6";
+import { WandSparkles } from "lucide-react";
 
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | string; // predefined sizes or custom value
   textScale?: number; // multiplier for text size relative to icon
 }
 
-export const Logo = ({ size = 'md', textScale = 1.25 }: LogoProps) => {
+export const Logo = ({ size = 'md', textScale = 1.5 }: LogoProps) => {
   // Define size mappings (icon sizes)
   const sizeMap = {
     sm: '1.5rem',
-    md: '2rem',
-    lg: '3.5rem',
-    xl: '7rem'
+    md: '1.6rem',
+    lg: '2.6rem',
+    xl: '6rem'
   };
 
   // Get the actual icon size
@@ -24,7 +24,7 @@ export const Logo = ({ size = 'md', textScale = 1.25 }: LogoProps) => {
 
   return (
     <div className='flex justify-center items-center gap-2 pl-2'>
-      <FaSquareXTwitter 
+      <WandSparkles
         className='text-primary skew-x-3' 
         style={{ 
           width: iconSize, 
