@@ -41,8 +41,9 @@ export const addTweet = async (oauth_token: string, oauth_token_secret: string, 
     });
     
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error adding tweet:", error);
+    return error.response;
   }
 
 }
@@ -68,8 +69,9 @@ export const deleteTweet = async (oauth_token: string, oauth_token_secret: strin
     });
   
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting tweet:", error);
+    return error.response;
   }
 
 }

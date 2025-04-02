@@ -33,5 +33,11 @@ export const checkTweetLimit = async (req: Req, res: Res, next: NextFunction) =>
     return res.status(429).json(errorResponse(429, "Free plan limit reached. You can only post 3 tweets per day."));
   }
 
+  // Check application-wide free plan limit
+  // const metrics = await GlobalMetrics.findOne().select("dailyTweetCount")
+  // if (metrics && metrics.dailyTweetCount >= 17) {
+  //   return res.status(429).json(errorResponse(429, "Application's tweet limit has been met for free plans today. Please try again tomorrow or upgrade to a paid plan."));
+  // }
+
   next();
 };

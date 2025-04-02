@@ -10,6 +10,7 @@ import { logger } from "../../lib/logger";
 import { Tweet } from "../../models/tweet.model";
 import { generateTweetContent } from "../../lib/api/ai/gemini";
 import jwt from "jsonwebtoken";
+import { GlobalMetrics } from "../../models/globalMetrics.model";
 
 const authorize = async (req: Req, res: Res) => {
 
@@ -254,6 +255,11 @@ const postTweet = async (req: Req, res: Res) => {
   }
 
   const newTweet = await addTweet(twitterToken.oauth_token, twitterToken.oauth_token_secret, tweetContent);
+  
+  if (!newTweet?.data?.id){
+    if (Number(newTweet?.data?.status) == 429) return res.status(Number(newTweet?.data?.status)).json(errorResponse(Number(newTweet?.data?.status), "Application's tweet limit has been met for free plans today. Please try again tomorrow or upgrade to a paid plan."));
+    return res.status(Number(newTweet?.data?.status)).json(errorResponse(Number(newTweet?.data?.status), newTweet?.data?.title));
+  }
 
   const newTweetData = await Tweet.create({
     userId: userId,
@@ -269,6 +275,18 @@ const postTweet = async (req: Req, res: Res) => {
     user.lastTweetDate = new Date();
     await user.save();
   }
+
+  await GlobalMetrics.updateOne(
+    {}, 
+    { 
+      $inc: { 
+        dailyTweetCount: 1,
+        monthlyTweetCount: 1,
+        totalTweets: 1,
+      } 
+    },
+    { upsert: true }
+  );
 
   return res.status(200).json(successResponse(200, "Tweet posted successfully", {
     tweetId: newTweet?.data?.id,
@@ -360,6 +378,18 @@ const scheduleTweet = async (req: Req, res: Res) => {
     user.lastTweetDate = today;
     await user.save();
   }
+
+  await GlobalMetrics.updateOne(
+    {}, 
+    { 
+      $inc: { 
+        dailyTweetCount: 1,
+        monthlyTweetCount: 1,
+        totalTweets: 1,
+      } 
+    },
+    { upsert: true }
+  );
 
   return res.status(200).json(successResponse(200, "Tweet scheduled successfully", {
     ...newScheduledTweetData.toObject(),

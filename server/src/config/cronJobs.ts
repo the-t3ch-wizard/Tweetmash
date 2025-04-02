@@ -31,6 +31,8 @@ cron.schedule("* * * * *", async () => {
       const oauth_token_secret = (tweet.userId as any)?.twitterData?.oauth_token_secret;
 
       const newTweet = await addTweet(oauth_token, oauth_token_secret, String(tweet.content));
+
+      if (!newTweet?.data?.id) logger.error(`Error in posting tweet: ${Number(newTweet?.data?.status)}: ${newTweet?.data?.title}`);
       
       if (newTweet?.data?.id) await Tweet.findByIdAndUpdate(tweet._id, { status: "posted", tweetId: newTweet?.data?.id });
 
