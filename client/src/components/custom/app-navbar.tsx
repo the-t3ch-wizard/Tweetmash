@@ -1,5 +1,5 @@
 import { Logo } from './logo';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ModeToggle } from "@/components/custom/mode-toggle"
 import { AppLogin } from "./app-login"
 import { AppSignup } from "./app-signup"
@@ -12,69 +12,58 @@ import { HiUserCircle } from 'react-icons/hi2';
 import { BadgePlus, CalendarClock, Home, Info, LayoutDashboard, LogOut, MessageSquareWarning } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+interface MenuItem {
+  title: string;
+  url: string;
+  icon: React.ReactNode | null;
+}
+
 export const AppNavbar = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
   const loggedInStatus = useAppSelector((state) => state.user.loggedInStatus);
 
-  const [menuItems, setMenuItems] = useState([
-    {
-      title: "Features",
-      url: "/#features",
-      icon: null,
-    },
-    {
-      title: "Pricing",
-      url: "/#pricing",
-      icon: null,
-    },
-    // {
-    //   title: "Testimonials",
-    //   url: "/#testimonials",
-    //   icon: null,
-    // },
-    // {
-    //   title: "About us",
-    //   url: "/about-us",
-    //   icon: null,
-    // },
-    {
-      title: "Contact us",
-      url: "/contact-us",
-      icon: null,
-    },
-    {
-      title: "FAQ",
-      url: "/#faq",
-      icon: null,
-    }
-  ]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
+  // setup navbar menu items
   useEffect(() => {
-    if (loggedInStatus){
-      setupSidebarMenuItems();
+    if (loggedInStatus) {
+      setMenuItems([
+        { title: "Dashboard", url: "/dashboard", icon: null },
+        { title: "Post Tweet", url: "/post-tweet", icon: null },
+        { title: "Schedule Tweet", url: "/schedule-tweet", icon: null },
+      ]);
+    } else {
+      setMenuItems([
+        { title: "Features", url: "/#features", icon: null, },
+        { title: "Pricing", url: "/#pricing", icon: null, },
+        // { title: "Testimonials", url: "/#testimonials", icon: null, },
+        // { title: "About us", url: "/about-us", icon: null, },
+        { title: "Contact us", url: "/contact-us", icon: null, },
+        { title: "FAQ", url: "/#faq", icon: null, }
+      ]);
     }
   }, [loggedInStatus])
 
-  const setupSidebarMenuItems = async () => {
-    setMenuItems([
-      {
-        title: "Dashboard",
-        url: "/dashboard",
-        icon: null,
-      },
-      {
-        title: "Post Tweet",
-        url: "/post-tweet",
-        icon: null,
-      },
-      {
-        title: "Schedule Tweet",
-        url: "/schedule-tweet",
-        icon: null,
-      },
-    ])
-  }
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.substring(1));
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location]);
+
+  const handleNavLinkClick = (url: string) => {
+    if (url.startsWith('#')) {
+      // For hash links, update URL and let useEffect handle the scroll
+      navigate({ pathname: '/', hash: url.substring(1) });
+    } else {
+      // For regular links, navigate normally
+      navigate(url);
+    }
+  };
 
   const profileMenuItems = [
     {
@@ -114,21 +103,17 @@ export const AppNavbar = () => {
       </div>
 
       <div className='flex justify-center items-center'>
-        
         <nav className="hidden gap-6 md:flex">
-          {
-            menuItems.map((item, idx) => {
-              return (<Link
-                to={item.url}
-                className="flex items-center text-base font-medium text-muted-foreground transition-all hover:text-foreground skew-x-2 hover:skew-x-0"
-              >
-                {/* {item.icon != null ? <item.icon /> : null} */}
-                {item.title}
-              </Link>)
-            })
-          }
+          {menuItems.map((item, idx) => (
+            <button
+              key={`${item.title}-${idx}`}
+              onClick={() => handleNavLinkClick(item.url)}
+              className="flex items-center text-base font-medium text-muted-foreground transition-all hover:text-foreground skew-x-2 hover:skew-x-0"
+            >
+              {item.title}
+            </button>
+          ))}
         </nav>
-        
       </div>
 
       <div className="flex justify-center items-center">
