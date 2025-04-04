@@ -1,6 +1,8 @@
 # Tweetmash
 
- [![Tweetmash](https://github.com/user-attachments/assets/1c35fa3f-412d-43ba-96cc-a81b8fd62c67)](https://www.youtube.com/watch?v=iCfoBeypkew&ab_channel=Ayush)
+<a href="https://www.youtube.com/watch?v=iCfoBeypkew&ab_channel=Ayush" target="_blank">
+  <img src="https://github.com/user-attachments/assets/1c35fa3f-412d-43ba-96cc-a81b8fd62c67" alt="Tweetmash">
+</a>
  
 ## Introduction
 
