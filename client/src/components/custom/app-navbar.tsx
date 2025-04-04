@@ -23,6 +23,7 @@ export const AppNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const loggedInStatus = useAppSelector((state) => state.user.loggedInStatus);
+  const serverRunningStatus = useAppSelector((state) => state.app.serverRunning);
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
@@ -117,6 +118,14 @@ export const AppNavbar = () => {
       </div>
 
       <div className="flex justify-center items-center">
+        {
+          !serverRunningStatus ?
+          <div className="flex justify-center items-center gap-2 p-1.5 px-2 mx-2 border border-border rounded-md bg-muted/50">
+            <div className='w-2 h-2 rounded-full bg-green-500 animate-pulse'/>
+            Server is getting started
+          </div> :
+          null
+        }
         {
           loggedInStatus ?
           <DropdownMenu>

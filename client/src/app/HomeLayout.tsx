@@ -1,6 +1,7 @@
 import { AppNavbar } from "@/components/custom/app-navbar"
 import { ThemeProvider } from "@/components/custom/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { setServerRunningStatus } from "@/lib/store/features/app/appSlice"
 import { clearUserDetails, clearUserLoggedInStatus, setUserDetails, setUserLoggedInStatus } from "@/lib/store/features/user/userSlice"
 import { useAppDispatch } from "@/lib/store/hooks/hooks"
 import { whoAmiI } from "@/services/user"
@@ -15,12 +16,18 @@ export const HomeLayout = () => {
     whoAmiI()
     .then((response) => {
       if (response.success){
+        dispatch(setServerRunningStatus(true))
         dispatch(setUserLoggedInStatus(true))
         dispatch(setUserDetails(response.data))
       }
     })
     .catch((error) => {
-      console.log('ERROR', error)
+      if (error.code === 'ECONNABORTED') {
+        console.log('⏱️ Request timed out - likely a cold start on Render');
+      } else {
+        dispatch(setServerRunningStatus(true))
+        console.log('ERROR', error.message || error)
+      }
       dispatch(clearUserLoggedInStatus())
       dispatch(clearUserDetails())
     })
