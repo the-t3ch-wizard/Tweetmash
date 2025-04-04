@@ -139,32 +139,35 @@ export const Home = () => {
                 {
                   videoPlayStatus ?
                   null :
-                  <div className="absolute flex flex-col items-center gap-4 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="48"
-                      height="48"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[#1DA1F2]"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <polygon points="10 8 16 12 10 16 10 8" />
-                    </svg>
-                    <span className="text-muted-foreground">Watch Tweetmash in action</span>
+                  <div className="w-full h-full absolute flex flex-col items-center gap-4 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
+                    <img 
+                      src="src\assets\Tweetmash.png"
+                      alt="Tweetmash demo video preview image"
+                      className="w-full h-full"
+                      />
+                    <div className="w-full h-full absolute bottom-0 left-0 flex flex-col justify-center items-center gap-2">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-20 h-20 text-[#e2c1ff]"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="10 8 16 12 10 16 10 8" />
+                      </svg>
+                      <span className="text-xl">Watch Tweetmash in action</span>
+                    </div>
                   </div>
                 }
                 <div className="w-full h-full">
                   {
                     videoPlayStatus ?
-                    <iframe 
-                      className="w-full h-full" 
-                      src="https://www.youtube.com/embed/X-w0LHRf8iI" 
-                    /> :
+                    <iframe className="w-full h-full" src="https://www.youtube.com/embed/iCfoBeypkew?si=OXXud3z5Ozp0gmxC" title="Tweetmash Demo YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+                    :
                     null
                   }
                 </div>
